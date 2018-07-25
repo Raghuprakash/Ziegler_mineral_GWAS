@@ -1,0 +1,44 @@
+---
+title: "Heritability"
+output: html_notebook
+date: 07-17-2018
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE) 
+knitr::opts_knit$set(root.dir=normalizePath('../../')) 
+#library(tidyverse)
+```
+
+
+```{r}
+library(ggplot2)
+
+h2 <- read.csv("cache/h2.csv")
+h2 <- h2[order(h2$Heritability), ]
+
+fsize=16
+p1 <- ggplot(h2, aes(x=mineral, , y=Heritability) ) + 
+  geom_bar(position=position_dodge(), stat="identity", col="cornflowerblue", fill="antiquewhite3") +
+  xlab("") +
+  ylim(c(0,1)) +
+  ylab("Heritability") +
+  ggtitle("") + theme_bw() +
+  #labs(fill="") +
+  guides(fill=FALSE) +
+  theme(axis.text = element_text(size=fsize),
+          axis.title=element_text(size=fsize, face="bold"),
+          legend.title = element_text(size=fsize, face="bold"),
+          legend.text = element_text(size=fsize))
+
+pdf("graphs/h2_15traits.pdf", width=8, height=8)
+p1
+dev.off()
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
