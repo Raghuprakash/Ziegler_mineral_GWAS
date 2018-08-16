@@ -225,13 +225,11 @@ write.table(outall, &quot;cache/cor_pheno_ziegler.csv&quot;, sep=&quot;,&quot;, 
 <h4>Plotting out the results</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gcmVhZC5jc3YoXCJjYWNoZS9jb3JfcGhlbm9femllZ2xlci5jc3ZcIilcblxuZGYgPC0gc3Vic2V0KGRmLCB0cmFpdDEgJWluJSBjKFwiTklSUHJvdGVpblwiLCBcIk5JUlN0YXJjaFwiLCBcIlgyMEtlcm5lbFdlaWdodFwiKSlcbmRmJHNpZ25pZmljYW5jZSA8LSBcIlllc1wiXG5kZltkZiRwdmFsID4wLjA1LCBdJHNpZ25pZmljYW5jZSA8LSBcIk5vXCJcblxuZnNpemU9MTZcbnAxIDwtIGdncGxvdChkZiwgYWVzKHg9dHJhaXQyLCB5ID0gciwgZmlsbD1zaWduaWZpY2FuY2UpKSArXG4gICAgICAgZ2VvbV9iYXIoc3RhdD1cImlkZW50aXR5XCIpICArIFxuICAgICAgI2dlb21fc21vb3RoKG1ldGhvZCA9ICdsbScpICtcbiAgICAgIHNjYWxlX2ZpbGxfbWFudWFsKHZhbHVlcz1jKFwiIzk5OTk5OVwiLCBcIiNFNjlGMDBcIikpICtcbiAgICAgIGZhY2V0X3dyYXAoIH4gZmFjdG9yKHRyYWl0MSwgbGV2ZWxzPWMoXCJYMjBLZXJuZWxXZWlnaHRcIiwgXCJOSVJTdGFyY2hcIiwgXCJOSVJQcm90ZWluXCIpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgbGFiZWxzID0gYygnQXZnLiBLZXJuZWwgV2VpZ2h0JywnTklSIFN0YXJjaCcsJ05JUiBQcm90ZWluJykpLCBuY29sPTEsIHNjYWxlcyA9ICdmcmVlX3knKSArXG4gICAgICBzY2FsZV9jb2xvcl9icmV3ZXIodHlwZSA9ICdxdWFsJykrXG4gICAgICAjbGFicyh5PU5VTEwsIGZpbGw9XCJUcmFpdHNcIikgKyB0aGVtZV9idygpICtcbiAgICAgIHRoZW1lKCNheGlzLnRleHQueD1lbGVtZW50X2JsYW5rKCksIGF4aXMudGlja3MueD1lbGVtZW50X2JsYW5rKCksXG4gICAgICAgICAgYXhpcy50ZXh0PWVsZW1lbnRfdGV4dChzaXplPTEyKSxcbiAgICAgICAgICBheGlzLnRpdGxlPWVsZW1lbnRfdGV4dChzaXplPWZzaXplLCBmYWNlPVwiYm9sZFwiKSxcbiAgICAgICAgICBsZWdlbmQudGl0bGUgPSBlbGVtZW50X3RleHQoc2l6ZT1mc2l6ZSwgZmFjZT1cImJvbGRcIiksXG4gICAgICAgICAgbGVnZW5kLnRleHQgPSBlbGVtZW50X3RleHQoc2l6ZT1mc2l6ZSksXG4gICAgICAgICAgc3RyaXAudGV4dCA9IGVsZW1lbnRfdGV4dChzaXplID0gZnNpemUsIGZhY2UgPSBcImJvbGRcIikpICtcbiAgICAgIHhsYWIoXCJNaW5lcmFsIENvbXBvc2l0aW9uIGluIEtlcm5lbFwiKSArXG4gICAgICB5bGFiKFwiQ29ycmVsYXRpb24gKHIpXCIpXG5cbnBkZihcImdyYXBocy95aWVsZF9taW5lcmFsLnBkZlwiLCB3aWR0aD0xMiwgaGVpZ2h0PTgpXG5wMVxuZGV2Lm9mZigpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gcmVhZC5jc3YoXCJjYWNoZS9jb3JfcGhlbm9femllZ2xlci5jc3ZcIilcbmRmIDwtIHN1YnNldChkZiwgdHJhaXQxICVpbiUgYyhcIk5JUlByb3RlaW5cIiwgXCJOSVJTdGFyY2hcIiwgXCJYMjBLZXJuZWxXZWlnaHRcIikpXG5kZiRzaWduaWZpY2FuY2UgPC0gXCJZZXNcIlxuZGZbZGYkcHZhbCA+MC4wNSwgXSRzaWduaWZpY2FuY2UgPC0gXCJOb1wiXG5mc2l6ZT0xNlxucDEgPC0gZ2dwbG90KGRmLCBhZXMoeD10cmFpdDIsIHkgPSByLCBmaWxsPXNpZ25pZmljYW5jZSkpICtcbiAgICAgICBnZW9tX2JhcihzdGF0PVwiaWRlbnRpdHlcIikgICsgXG4gICAgICAjZ2VvbV9zbW9vdGgobWV0aG9kID0gJ2xtJykgK1xuICAgICAgc2NhbGVfZmlsbF9tYW51YWwodmFsdWVzPWMoXCIjOTk5OTk5XCIsIFwiI0U2OUYwMFwiKSkgK1xuICAgICAgZmFjZXRfd3JhcCggfiBmYWN0b3IodHJhaXQxLCBsZXZlbHM9YyhcIlgyMEtlcm5lbFdlaWdodFwiLCBcIk5JUlN0YXJjaFwiLCBcIk5JUlByb3RlaW5cIiksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBsYWJlbHMgPSBjKCdBdmcuIEtlcm5lbCBXZWlnaHQnLCdOSVIgU3RhcmNoJywnTklSIFByb3RlaW4nKSksIG5jb2w9MSwgc2NhbGVzID0gJ2ZyZWVfeScpICtcbiAgICAgIHNjYWxlX2NvbG9yX2JyZXdlcih0eXBlID0gJ3F1YWwnKStcbiAgICAgICNsYWJzKHk9TlVMTCwgZmlsbD1cIlRyYWl0c1wiKSArIHRoZW1lX2J3KCkgK1xuICAgICAgdGhlbWUoI2F4aXMudGV4dC54PWVsZW1lbnRfYmxhbmsoKSwgYXhpcy50aWNrcy54PWVsZW1lbnRfYmxhbmsoKSxcbiAgICAgICAgICBheGlzLnRleHQ9ZWxlbWVudF90ZXh0KHNpemU9MTIpLFxuICAgICAgICAgIGF4aXMudGl0bGU9ZWxlbWVudF90ZXh0KHNpemU9ZnNpemUsIGZhY2U9XCJib2xkXCIpLFxuICAgICAgICAgIGxlZ2VuZC50aXRsZSA9IGVsZW1lbnRfdGV4dChzaXplPWZzaXplLCBmYWNlPVwiYm9sZFwiKSxcbiAgICAgICAgICBsZWdlbmQudGV4dCA9IGVsZW1lbnRfdGV4dChzaXplPWZzaXplKSxcbiAgICAgICAgICBzdHJpcC50ZXh0ID0gZWxlbWVudF90ZXh0KHNpemUgPSBmc2l6ZSwgZmFjZSA9IFwiYm9sZFwiKSkgK1xuICAgICAgeGxhYihcIk1pbmVyYWwgQ29tcG9zaXRpb24gaW4gS2VybmVsXCIpICtcbiAgICAgIHlsYWIoXCJDb3JyZWxhdGlvbiAocilcIilcbnBkZihcImdyYXBocy95aWVsZF9taW5lcmFsLnBkZlwiLCB3aWR0aD0xMiwgaGVpZ2h0PTgpXG5wMVxuZGV2Lm9mZigpXG5gYGAifQ== -->
 <pre class="r"><code>df &lt;- read.csv(&quot;cache/cor_pheno_ziegler.csv&quot;)
-
 df &lt;- subset(df, trait1 %in% c(&quot;NIRProtein&quot;, &quot;NIRStarch&quot;, &quot;X20KernelWeight&quot;))
 df$significance &lt;- &quot;Yes&quot;
 df[df$pval &gt;0.05, ]$significance &lt;- &quot;No&quot;
-
 fsize=16
 p1 &lt;- ggplot(df, aes(x=trait2, y = r, fill=significance)) +
        geom_bar(stat=&quot;identity&quot;)  + 
@@ -249,11 +247,14 @@ p1 &lt;- ggplot(df, aes(x=trait2, y = r, fill=significance)) +
           strip.text = element_text(size = fsize, face = &quot;bold&quot;)) +
       xlab(&quot;Mineral Composition in Kernel&quot;) +
       ylab(&quot;Correlation (r)&quot;)
-
 pdf(&quot;graphs/yield_mineral.pdf&quot;, width=12, height=8)
 p1
 dev.off()</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoibnVsbCBkZXZpY2UgXG4gICAgICAgICAgMSBcbiJ9 -->
+<pre><code>null device 
+          1 </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
