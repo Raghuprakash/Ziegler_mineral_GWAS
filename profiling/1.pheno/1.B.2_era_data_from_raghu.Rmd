@@ -1,0 +1,33 @@
+---
+title: "Correlation of GY vs. Mineral"
+output: html_notebook
+date: 08-16-2018
+author: "Jinliang Yang"
+---
+
+```{r setup, include=TRUE}
+#setwd("~/Documents/Github/pvpDiallel/")
+knitr::opts_knit$set(root.dir=normalizePath('../../'))
+```
+
+
+How did we calcuated the BLUP?
+
+## Get the BLUE value of the mineral traits for 18 Era inbred lines.
+The result is output to `cache`.
+
+```{r}
+era <- read.csv("data/era_ziegler.csv")
+yinfo <- era[!duplicated(era$pedigree), ]
+
+
+blue <- read.csv("data/BLUE_mineral_ziegler.csv")
+
+yb <- merge(yinfo[, c("pedigree", "era_inbred", "era_inbred_year")], blue, by.x="pedigree", by.y="X")
+write.table(yb, "cache/era_inbred_blue_mineral_value.csv", sep=",", row.names=FALSE, quote=FALSE)
+```
+
+
+
+
+
