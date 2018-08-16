@@ -1,0 +1,73 @@
+---
+title: "Obtaining Genotypic data from Panzea Database for 282"
+output: html_notebook
+date: 08-16-2018
+author: "Jinliang Yang"
+---
+
+
+## Genotypic data: HapMap3 data
+
+Below is the background about the HapMap3 data processing (borrowed from GERP-diallel project).
+
+-----------------------------------
+
+### subsetting info
+
+Note in HapMap3 the id is something like "set282_B73".
+
+```{r}
+set282 <- read.table("/common/jyanglab/jyang21/dbcenter/HapMap3/set282.txt", header=FALSE)
+set282$id <- paste(set282$V1, set282$V2, sep="_")
+write.table(set282$id, "/common/jyanglab/jyang21/dbcenter/HapMap3/set282_id.txt", sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+```
+
+
+now the genotype data have been moved to `/common/jyanglab/jyang21/dbcenter/HapMap3`
+```{r, eval=FALSE}
+library("huskeR")
+
+for(i in 1:10){
+  cmd <- c("cd /common/jyanglab/jyang21/dbcenter/HapMap3")
+  #ext <- paste0("pigz -d -p 16 merged_flt_c", i, ".vcf.gz")
+  #bgzip <- paste0("bgzip merged_flt_c", i, ".vcf -@ 16")
+  #idx <- paste0("tabix -p vcf merged_flt_c", i, ".vcf.gz")
+  
+  ## annotate VCF header becasue there is an error FORMAT=>INFO for AD
+  #b0 <- paste0("bcftools annotate -h change_AD.txt merged_flt_c", i, ".vcf.gz -Oz -o merged_flt_ad_c", i, ".vcf.gz")
+  
+  ## 1. keep only the biallelic SNPs for N=35 samples
+  b1 <- paste0("bcftools view merged_flt_ad_c", i, ".vcf.gz ", 
+               "-m2 -M2 -v snps -S set282_id.txt -Oz -o ", "chr", i, "_bisnp_n282.vcf.gz") 
+  ## convert vcf.gz into SNP txt
+  #b2 <- paste0("bcftools query -S bkn_pvp_samples.txt",
+  #             " -f '%CHROM\t%POS\t%REF\t%ALT[\t%TGT]\n'",
+  #             " chr", i, "_bisnp_n35.vcf.gz > chr", i, "_gt_n35.txt")
+  
+  ## 2. Keep only the 282 diversity lines:
+  b2 <- paste0("plink -vcf chr", i, "_bisnp_n282.vcf.gz --keep-allele-order --make-bed --out chr", i, "_bisnp_n282")
+  
+  ## 3. Set SNP id
+  b3 <- paste0("plink -bfile chr", i, "_bisnp_n282 --set-missing-var-ids @_#_\\$1_\\$2 --make-bed --out chr", i, "_bisnp_n282_snpid")
+  
+  shid <- paste0("slurm-script/run_", i, ".sh")
+  cmdout <- c(cmd, b1, b2, b3)
+  cat(cmdout, file=shid, sep="\n", append=FALSE)
+}
+
+
+###
+shcode <- paste("module load plink/1.90 bcftools/1.8", "sh slurm-script/run_$SLURM_ARRAY_TASK_ID.sh", sep="\n")
+
+set_array_job(shid = "slurm-script/run_plink.sh",
+  shcode = shcode, arrayjobs = "1-10", wd = NULL,
+  jobid = "plink", email = "yangjl0930@gmail.com", runinfo = c(FALSE, "jclarke", "5", "10G", "8:00:00"))
+
+###>>> In this path: cd /common/jyanglab/jyang21/projects/maize282
+###>>> RUN: sbatch -p jclarke --licenses=common --ntasks=5 --mem 10G --time=8:00:00 slurm-script/run_plink.sh
+
+```
+
+
+At end end, move the data into `/common/jyanglab/jyang21/dbcenter/HapMap3/set282`.
+

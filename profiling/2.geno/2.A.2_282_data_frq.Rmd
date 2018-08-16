@@ -1,0 +1,37 @@
+---
+title: "Obtaining Genotypic data from Panzea Database for 282"
+output: html_notebook
+date: 08-16-2018
+author: "Jinliang Yang"
+---
+
+
+
+```{bash}
+ls *_set282_snpid.log > chr1_10_set282.txt
+
+plink --merge-list chr1_10_set282.txt --make-bed --out chrall_flt2_ad_set282_snpid
+
+plink -bfile chrall_flt2_ad_set282_snpid --freq --missing --out chrall_flt2_ad_set282_snpid
+```
+
+
+
+## Plot MAF and Missingness
+
+Genomic data is now located here
+
+
+
+```{r}
+library("data.table")
+
+maf <- fread("/common/jyanglab/jyang21/dbcenter/HapMap3/set282/merged_flt_ad_c9_set282_snpid.frq", header=TRUE)
+
+lmiss <- fread("/lustre/work/jyanglab/jyang21/dbcenter/HapMap3/set282_maf1m5/chrall_flt2_ad_set282_snpid.lmiss", header=TRUE)
+hist(lmiss$F_MISS)
+
+```
+
+
+
