@@ -179,37 +179,84 @@ $(document).ready(function () {
 
 
 <!-- rnb-text-begin -->
+<div id="combine-into-one-file-with-10-chrs." class="section level3">
+<h3>combine into one file with 10 chrs.</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgYmFzaFxubHMgKl9zZXQyODJfc25waWQubG9nID4gY2hyMV8xMF9zZXQyODIudHh0XG5cbnBsaW5rIC0tbWVyZ2UtbGlzdCBjaHIxXzEwX3NldDI4Mi50eHQgLS1tYWtlLWJlZCAtLW91dCBjaHJhbGxfZmx0Ml9hZF9zZXQyODJfc25waWRcblxucGxpbmsgLWJmaWxlIGNocmFsbF9mbHQyX2FkX3NldDI4Ml9zbnBpZCAtLWZyZXEgLS1taXNzaW5nIC0tb3V0IGNocmFsbF9mbHQyX2FkX3NldDI4Ml9zbnBpZFxuYGBgIn0= -->
-<pre class="bash"><code>ls *_set282_snpid.log &gt; chr1_10_set282.txt
+<!-- rnb-source-begin eyJkYXRhIjpbImxzICpfbjI4Ml9zbnBpZC5sb2cgPiBjaHIxXzEwX3NldDI4Mi50eHQiLCIjICVzLy5sb2cvL2ciLCIiLCJtb2R1bGUgbG9hZCBwbGluayIsInBsaW5rIC0tbWVyZ2UtbGlzdCBjaHIxXzEwX3NldDI4Mi50eHQgLS1tYWtlLWJlZCAtLW91dCBhbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZCIsIiIsInBsaW5rIC1iZmlsZSBhbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZCAtLWZyZXEgLS1taXNzaW5nIC0tb3V0IGFsbGNocl9iaXNucF9uMjgyX3NucGlkIiwiIiwiIyMgbW92ZSB0byB3b3JrL3RlbXBkYXRhIHRvIHJlZHVjZSBkaXNrIHVzYWdlIG9uIGNvbW1vbiIsIm12IGNociogL2x1c3RyZS93b3JrL2p5YW5nbGFiL2p5YW5nMjEvdGVtcGRhdGEvaGFwbWFwMy9zZXQyODJfY2hycyJdfQ== -->
+<pre class="r"><code>ls *_n282_snpid.log &gt; chr1_10_set282.txt
+# %s/.log//g
 
-plink --merge-list chr1_10_set282.txt --make-bed --out chrall_flt2_ad_set282_snpid
+module load plink
+plink --merge-list chr1_10_set282.txt --make-bed --out allchr_bisnp_n282_snpid
 
-plink -bfile chrall_flt2_ad_set282_snpid --freq --missing --out chrall_flt2_ad_set282_snpid</code></pre>
+plink -bfile allchr_bisnp_n282_snpid --freq --missing --out allchr_bisnp_n282_snpid
+
+## move to work/tempdata to reduce disk usage on common
+mv chr* /lustre/work/jyanglab/jyang21/tempdata/hapmap3/set282_chrs</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>72 Million SNPs</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgYmFzaFxuIyNsaWdodCBmaWx0ZXJpbmdcbnBsaW5rIC1iZmlsZSBhbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZCAtLW1hZiAwLjAwMSAtLWdlbm8gMC4xIC0tc25wcy1vbmx5IC0tbWFrZS1iZWQgLS1vdXQgYWxsY2hyX2Jpc25wX24yODJfc25waWRfbWFmMDAxX2dlbm8xXG4jIyA0NTcwMTcxMiB2YXJpYW50cyBhbmQgMjQ5IHBlb3BsZSBwYXNzIGZpbHRlcnMgYW5kIFFDLlxuXG5cbnBsaW5rIC1iZmlsZSBhbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZCAtLW1hZiAwLjAwMSAtLWdlbm8gMC41IC0tc25wcy1vbmx5IC0tbWFrZS1iZWQgLS1vdXQgYWxsY2hyX2Jpc25wX24yODJfc25waWRfbWFmMDAxX2dlbm81XG4jIyAyODAxNDc0MCB2YXJpYW50cyBhbmQgMjQ5IHBlb3BsZSBwYXNzIGZpbHRlcnMgYW5kIFFDLlxuXG5wbGluayAtYmZpbGUgYWxsY2hyX2Jpc25wX24yODJfc25waWRfbWFmMDAxX2dlbm81IC0tZnJlcSAtLW1pc3NpbmcgLS1vdXQgYWxsY2hyX2Jpc25wX24yODJfc25waWRfbWFmMDAxX2dlbm81XG5gYGAifQ== -->
+<pre class="bash"><code>##light filtering
+plink -bfile allchr_bisnp_n282_snpid --maf 0.001 --geno 0.1 --snps-only --make-bed --out allchr_bisnp_n282_snpid_maf001_geno1
+## 45701712 variants and 249 people pass filters and QC.
+
+
+plink -bfile allchr_bisnp_n282_snpid --maf 0.001 --geno 0.5 --snps-only --make-bed --out allchr_bisnp_n282_snpid_maf001_geno5
+## 28014740 variants and 249 people pass filters and QC.
+
+plink -bfile allchr_bisnp_n282_snpid_maf001_geno5 --freq --missing --out allchr_bisnp_n282_snpid_maf001_geno5</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
 <div id="plot-maf-and-missingness" class="section level2">
 <h2>Plot MAF and Missingness</h2>
 <p>Genomic data is now located here</p>
+<p>get the frq and lmiss data and plot them locally.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShcImRhdGEudGFibGVcIilcblxubWFmIDwtIGZyZWFkKFwiL2NvbW1vbi9qeWFuZ2xhYi9qeWFuZzIxL2RiY2VudGVyL0hhcE1hcDMvc2V0MjgyL21lcmdlZF9mbHRfYWRfYzlfc2V0MjgyX3NucGlkLmZycVwiLCBoZWFkZXI9VFJVRSlcblxubG1pc3MgPC0gZnJlYWQoXCIvbHVzdHJlL3dvcmsvanlhbmdsYWIvanlhbmcyMS9kYmNlbnRlci9IYXBNYXAzL3NldDI4Ml9tYWYxbTUvY2hyYWxsX2ZsdDJfYWRfc2V0MjgyX3NucGlkLmxtaXNzXCIsIGhlYWRlcj1UUlVFKVxuaGlzdChsbWlzcyRGX01JU1MpXG5cbmBgYCJ9 -->
-<pre class="r"><code>library(&quot;data.table&quot;)
-
-maf &lt;- fread(&quot;/common/jyanglab/jyang21/dbcenter/HapMap3/set282/merged_flt_ad_c9_set282_snpid.frq&quot;, header=TRUE)
-
-lmiss &lt;- fread(&quot;/lustre/work/jyanglab/jyang21/dbcenter/HapMap3/set282_maf1m5/chrall_flt2_ad_set282_snpid.lmiss&quot;, header=TRUE)
-hist(lmiss$F_MISS)
+<!-- rnb-source-begin eyJkYXRhIjoic2NwIGNyYW5lOi9jb21tb24vanlhbmdsYWIvanlhbmcyMS9kYmNlbnRlci9IYXBNYXAzL3NldDI4Mi9hbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZF9tYWYwMDFfZ2VubzUuZnJxIGxhcmdlZGF0YSJ9 -->
+<pre class="r"><code>scp crane:/common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno5.frq largedata</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI3NldHdkKFwifi9Eb2N1bWVudHMvR2l0aHViL3B2cERpYWxsZWwvXCIpXG5rbml0cjo6b3B0c19rbml0JHNldChyb290LmRpcj1ub3JtYWxpemVQYXRoKCcuLi8uLi8nKSlcbmBgYCJ9 -->
+<pre class="r"><code>#setwd(&quot;~/Documents/Github/pvpDiallel/&quot;)
+knitr::opts_knit$set(root.dir=normalizePath('../../'))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGRmKFwiZ3JhcGhzL21hZl9sbWlzcy5wZGZcIiwgd2lkdGggPSAxMCwgaGVpZ2h0PTUpXG5wYXIobWZyb3c9YygxLDIpKVxuaGlzdChtYWYkTUFGLCBicmVha3M9NTAsIGNvbD1cIiNjZGI3OWVcIiwgbWFpbj1cIk1BRiAoU05QID0gMjgsMDE0LDc0MClcIiwgeGxhYj1cIk1pbm9yIEFsbGVsZSBGcmVxXCIpXG4jYWJsaW5lKHY9MC4wMSwgbHR5PTIsIGNvbD1cImJsYWNrXCIsIGx3ZD0zKVxuYWJsaW5lKHY9MC4wNSwgbHR5PTIsIGNvbD1cInJlZFwiLCBsd2Q9Mylcbmhpc3QobG1pc3MkRl9NSVNTLCBicmVha3M9MzUsIGNvbD1cIiNjZGI3OWVcIiwgbWFpbj1cIk1pc3NpbmduZXNzIChTTlAgPSAyOCwwMTQsNzQwKVwiLCB4bGFiPVwiTWlzc2luZyBSYXRlXCIpXG4jYWJsaW5lKHY9MC42LCBsdHk9MiwgY29sPVwicmVkXCIsIGx3ZD0zKVxuI2FibGluZSh2PTAuMDUsIGx0eT0yLCBjb2w9XCJyZWRcIiwgbHdkPTMpXG5kZXYub2ZmKClcblxuYGBgIn0= -->
+<pre class="r"><code>pdf(&quot;graphs/maf_lmiss.pdf&quot;, width = 10, height=5)
+par(mfrow=c(1,2))
+hist(maf$MAF, breaks=50, col=&quot;#cdb79e&quot;, main=&quot;MAF (SNP = 28,014,740)&quot;, xlab=&quot;Minor Allele Freq&quot;)
+#abline(v=0.01, lty=2, col=&quot;black&quot;, lwd=3)
+abline(v=0.05, lty=2, col=&quot;red&quot;, lwd=3)
+hist(lmiss$F_MISS, breaks=35, col=&quot;#cdb79e&quot;, main=&quot;Missingness (SNP = 28,014,740)&quot;, xlab=&quot;Missing Rate&quot;)
+#abline(v=0.6, lty=2, col=&quot;red&quot;, lwd=3)
+#abline(v=0.05, lty=2, col=&quot;red&quot;, lwd=3)
+dev.off()
 </code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoibnVsbCBkZXZpY2UgXG4gICAgICAgICAgMSBcbiJ9 -->
+<pre><code>null device 
+          1 </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiT2J0YWluaW5nIEdlbm90eXBpYyBkYXRhIGZyb20gUGFuemVhIERhdGFiYXNlIGZvciAyODIiCm91dHB1dDogaHRtbF9ub3RlYm9vawpkYXRlOiAwOC0xNi0yMDE4CmF1dGhvcjogIkppbmxpYW5nIFlhbmciCi0tLQoKCgpgYGB7YmFzaH0KbHMgKl9zZXQyODJfc25waWQubG9nID4gY2hyMV8xMF9zZXQyODIudHh0CgpwbGluayAtLW1lcmdlLWxpc3QgY2hyMV8xMF9zZXQyODIudHh0IC0tbWFrZS1iZWQgLS1vdXQgY2hyYWxsX2ZsdDJfYWRfc2V0MjgyX3NucGlkCgpwbGluayAtYmZpbGUgY2hyYWxsX2ZsdDJfYWRfc2V0MjgyX3NucGlkIC0tZnJlcSAtLW1pc3NpbmcgLS1vdXQgY2hyYWxsX2ZsdDJfYWRfc2V0MjgyX3NucGlkCmBgYAoKCgojIyBQbG90IE1BRiBhbmQgTWlzc2luZ25lc3MKCkdlbm9taWMgZGF0YSBpcyBub3cgbG9jYXRlZCBoZXJlCgoKCmBgYHtyfQpsaWJyYXJ5KCJkYXRhLnRhYmxlIikKCm1hZiA8LSBmcmVhZCgiL2NvbW1vbi9qeWFuZ2xhYi9qeWFuZzIxL2RiY2VudGVyL0hhcE1hcDMvc2V0MjgyL21lcmdlZF9mbHRfYWRfYzlfc2V0MjgyX3NucGlkLmZycSIsIGhlYWRlcj1UUlVFKQoKbG1pc3MgPC0gZnJlYWQoIi9sdXN0cmUvd29yay9qeWFuZ2xhYi9qeWFuZzIxL2RiY2VudGVyL0hhcE1hcDMvc2V0MjgyX21hZjFtNS9jaHJhbGxfZmx0Ml9hZF9zZXQyODJfc25waWQubG1pc3MiLCBoZWFkZXI9VFJVRSkKaGlzdChsbWlzcyRGX01JU1MpCgpgYGAKCgoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiT2J0YWluaW5nIEdlbm90eXBpYyBkYXRhIGZyb20gUGFuemVhIERhdGFiYXNlIGZvciAyODIiCm91dHB1dDogaHRtbF9ub3RlYm9vawpkYXRlOiAwOC0xNi0yMDE4CmF1dGhvcjogIkppbmxpYW5nIFlhbmciCi0tLQoKCiMjIyBjb21iaW5lIGludG8gb25lIGZpbGUgd2l0aCAxMCBjaHJzLgoKYGBge2Jhc2gsIGV2YWw9RkFMU0V9CmxzICpfbjI4Ml9zbnBpZC5sb2cgPiBjaHIxXzEwX3NldDI4Mi50eHQKIyAlcy8ubG9nLy9nCgptb2R1bGUgbG9hZCBwbGluawpwbGluayAtLW1lcmdlLWxpc3QgY2hyMV8xMF9zZXQyODIudHh0IC0tbWFrZS1iZWQgLS1vdXQgYWxsY2hyX2Jpc25wX24yODJfc25waWQKCnBsaW5rIC1iZmlsZSBhbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZCAtLWZyZXEgLS1taXNzaW5nIC0tb3V0IGFsbGNocl9iaXNucF9uMjgyX3NucGlkCgojIyBtb3ZlIHRvIHdvcmsvdGVtcGRhdGEgdG8gcmVkdWNlIGRpc2sgdXNhZ2Ugb24gY29tbW9uCm12IGNociogL2x1c3RyZS93b3JrL2p5YW5nbGFiL2p5YW5nMjEvdGVtcGRhdGEvaGFwbWFwMy9zZXQyODJfY2hycwpgYGAKCjcyIE1pbGxpb24gU05QcwoKYGBge2Jhc2h9CiMjbGlnaHQgZmlsdGVyaW5nCnBsaW5rIC1iZmlsZSBhbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZCAtLW1hZiAwLjAwMSAtLWdlbm8gMC4xIC0tc25wcy1vbmx5IC0tbWFrZS1iZWQgLS1vdXQgYWxsY2hyX2Jpc25wX24yODJfc25waWRfbWFmMDAxX2dlbm8xCiMjIDQ1NzAxNzEyIHZhcmlhbnRzIGFuZCAyNDkgcGVvcGxlIHBhc3MgZmlsdGVycyBhbmQgUUMuCgoKcGxpbmsgLWJmaWxlIGFsbGNocl9iaXNucF9uMjgyX3NucGlkIC0tbWFmIDAuMDAxIC0tZ2VubyAwLjUgLS1zbnBzLW9ubHkgLS1tYWtlLWJlZCAtLW91dCBhbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZF9tYWYwMDFfZ2VubzUKIyMgMjgwMTQ3NDAgdmFyaWFudHMgYW5kIDI0OSBwZW9wbGUgcGFzcyBmaWx0ZXJzIGFuZCBRQy4KCnBsaW5rIC1iZmlsZSBhbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZF9tYWYwMDFfZ2VubzUgLS1mcmVxIC0tbWlzc2luZyAtLW91dCBhbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZF9tYWYwMDFfZ2VubzUKYGBgCgoKCiMjIFBsb3QgTUFGIGFuZCBNaXNzaW5nbmVzcwoKR2Vub21pYyBkYXRhIGlzIG5vdyBsb2NhdGVkIGhlcmUKCmdldCB0aGUgZnJxIGFuZCBsbWlzcyBkYXRhIGFuZCBwbG90IHRoZW0gbG9jYWxseS4KCmBgYHtiYXNoLCBldmFsPUZBTFNFfQpzY3AgY3JhbmU6L2NvbW1vbi9qeWFuZ2xhYi9qeWFuZzIxL2RiY2VudGVyL0hhcE1hcDMvc2V0MjgyL2FsbGNocl9iaXNucF9uMjgyX3NucGlkX21hZjAwMV9nZW5vNS5mcnEgbGFyZ2VkYXRhCmBgYAoKYGBge3Igc2V0dXAsIGluY2x1ZGU9VFJVRX0KI3NldHdkKCJ+L0RvY3VtZW50cy9HaXRodWIvcHZwRGlhbGxlbC8iKQprbml0cjo6b3B0c19rbml0JHNldChyb290LmRpcj1ub3JtYWxpemVQYXRoKCcuLi8uLi8nKSkKYGBgCgpgYGB7cn0KbGlicmFyeSgiZGF0YS50YWJsZSIpCgptYWYgPC0gZnJlYWQoImxhcmdlZGF0YS9hbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZF9tYWYwMDFfZ2VubzUuZnJxIiwgaGVhZGVyPVRSVUUpCmxtaXNzIDwtIGZyZWFkKCJsYXJnZWRhdGEvYWxsY2hyX2Jpc25wX24yODJfc25waWRfbWFmMDAxX2dlbm81LmxtaXNzIiwgaGVhZGVyPVRSVUUpCgoKcGRmKCJncmFwaHMvbWFmX2xtaXNzLnBkZiIsIHdpZHRoID0gMTAsIGhlaWdodD01KQpwYXIobWZyb3c9YygxLDIpKQpoaXN0KG1hZiRNQUYsIGJyZWFrcz01MCwgY29sPSIjY2RiNzllIiwgbWFpbj0iTUFGIChTTlAgPSAyOCwwMTQsNzQwKSIsIHhsYWI9Ik1pbm9yIEFsbGVsZSBGcmVxIikKI2FibGluZSh2PTAuMDEsIGx0eT0yLCBjb2w9ImJsYWNrIiwgbHdkPTMpCmFibGluZSh2PTAuMDUsIGx0eT0yLCBjb2w9InJlZCIsIGx3ZD0zKQoKaGlzdChsbWlzcyRGX01JU1MsIGJyZWFrcz0zNSwgY29sPSIjY2RiNzllIiwgbWFpbj0iTWlzc2luZ25lc3MgKFNOUCA9IDI4LDAxNCw3NDApIiwgeGxhYj0iTWlzc2luZyBSYXRlIikKI2FibGluZSh2PTAuNiwgbHR5PTIsIGNvbD0icmVkIiwgbHdkPTMpCiNhYmxpbmUodj0wLjA1LCBsdHk9MiwgY29sPSJyZWQiLCBsd2Q9MykKZGV2Lm9mZigpCgpgYGAKCgoK</div>
 
 
 
