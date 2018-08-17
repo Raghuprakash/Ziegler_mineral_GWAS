@@ -1,0 +1,89 @@
+---
+title: "Correlation of GY vs. Mineral"
+output: html_notebook
+date: 08-16-2018
+author: "Jinliang Yang"
+---
+
+```{r setup, include=TRUE}
+#setwd("~/Documents/Github/pvpDiallel/")
+knitr::opts_knit$set(root.dir=normalizePath('../../'))
+```
+
+
+How did we calcuated the BLUP?
+
+## Get the BLUE value of the mineral traits for 18 Era inbred lines.
+The result is output to `cache`.
+
+```{r}
+era <- read.csv("data/era_ziegler.csv")
+yinfo <- era[!duplicated(era$pedigree), ]
+
+
+blue <- read.csv("data/BLUE_mineral_ziegler.csv")
+
+yb <- merge(yinfo[, c("pedigree", "era_inbred", "era_inbred_year")], blue, by.x="pedigree", by.y="X")
+write.table(yb, "cache/era_inbred_blue_mineral_value.csv", sep=",", row.names=FALSE, quote=FALSE)
+```
+
+
+## Era inbreds: GY vs. mineral
+
+```{r}
+yb <- read.csv("cache/era_inbred_blue_mineral_value.csv")
+p <- read.csv("data/pheno_282set_n37.csv")
+
+yp <- merge(yb, p[, c("Genotype", "X20KernelWeight", "NIRStarch", "NIRProtein")], by.x="pedigree", by.y="Genotype")
+
+## Normalize data to c(0, 1) scale
+yp[, 4:ncol(yp)] <- apply(yp[, 4:ncol(yp)], 2, function(x){(x-min(x))/diff(range(x))})
+
+## reshape it to long format
+library("tidyr")
+df1 <- gather(yp, trait, value, c("X20KernelWeight", "NIRStarch", "NIRProtein"))
+df1$type <- "Yield Related Traits"
+
+df2 <- gather(yp, trait, value, c("P31", "K39", "Ca43", "S34"))
+df2$type <- "Macronutrient Traits"
+
+df3 <- gather(yp, trait, value, B11:Cd111)
+df3 <- subset(df3, trait %in% c("Fe57", "Zn66", "Cu65", "Cd111"))
+df3$type <- "Micronutrient Traits"
+
+df <- rbind(df1[, c("pedigree", "era_inbred", "era_inbred_year", "trait", "value", "type")], 
+            df2[, c("pedigree", "era_inbred", "era_inbred_year", "trait", "value", "type")], 
+            df3[, c("pedigree", "era_inbred", "era_inbred_year", "trait", "value", "type")])
+
+fsize=16
+
+p2 <- ggplot(df, aes(x=era_inbred_year, y = value, colour=trait)) +
+      geom_point()  + 
+      geom_smooth(method = 'lm', size=1.6) +
+      #scale_fill_manual(values=c("#999999", "#E69F00")) +
+      facet_wrap(~ factor(type, levels=c("Yield Related Traits", "Macronutrient Traits", "Micronutrient Traits")),
+      #                     labels = c('Avg. Kernel Weight','NIR Starch','NIR Protein')), 
+                          ncol=1, scales = 'free_y') +
+      #scale_color_brewer(type = 'qual')+
+      #labs(y=NULL, fill="Traits") + 
+      theme_bw() +
+      theme(#axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+          axis.text=element_text(size=12),
+          axis.title=element_text(size=fsize, face="bold"),
+          legend.title = element_text(size=fsize, face="bold"),
+          legend.text = element_text(size=fsize),
+          strip.text = element_text(size = fsize, face = "bold")) +
+      xlab("Year") +
+      ylab("Normalized Value")
+p2
+
+
+pdf("graphs/era_yield_mineral.pdf", width=6, height=8)
+p2
+dev.off()
+
+```
+
+
+
+

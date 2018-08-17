@@ -1,0 +1,31 @@
+---
+title: "Leaf Nutrient data from Ge"
+output: html_notebook
+date: 08-16-2018
+author: "Jinliang Yang"
+---
+
+```{r setup, include=TRUE}
+#setwd("~/Documents/Github/pvpDiallel/")
+knitr::opts_knit$set(root.dir=normalizePath('../../'))
+```
+
+## Processing Leaf Nutrient Data
+```{r}
+leaf <- read.csv("data/EPSCoR_Leaf_Nutrient_Dataset.csv")
+fb <- read.csv("data/FB_master_2018.csv")
+leaf2 <- merge(fb[, c("row", "pedigree", "genotype", "experiment")], leaf, by.x="row", by.y="PlotID", all.y=TRUE)
+
+idx1 <- which(is.na(leaf2$pedigree))
+leaf2[idx1, ]
+
+idx2 <- which(is.na(leaf2$genotype))
+leaf2[idx2,]
+# Note that we donot have row 4097
+
+
+leaf3 <- merge(fb[, c("row", "pedigree", "genotype", "experiment")], leaf, by.x="row", by.y="PlotID")
+write.table(leaf3, "data/leaf_nutrient_LN_HN_n574.csv", sep=",", row.names=FALSE, quote=FALSE)
+```
+
+

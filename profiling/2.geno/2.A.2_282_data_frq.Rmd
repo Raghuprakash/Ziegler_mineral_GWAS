@@ -1,0 +1,76 @@
+---
+title: "Obtaining Genotypic data from Panzea Database for 282"
+output: html_notebook
+date: 08-16-2018
+author: "Jinliang Yang"
+---
+
+
+### combine into one file with 10 chrs.
+
+```{bash, eval=FALSE}
+ls *_n282_snpid.log > chr1_10_set282.txt
+# %s/.log//g
+
+module load plink
+plink --merge-list chr1_10_set282.txt --make-bed --out allchr_bisnp_n282_snpid
+
+plink -bfile allchr_bisnp_n282_snpid --freq --missing --out allchr_bisnp_n282_snpid
+
+## move to work/tempdata to reduce disk usage on common
+mv chr* /lustre/work/jyanglab/jyang21/tempdata/hapmap3/set282_chrs
+```
+
+72 Million SNPs
+
+```{bash}
+##light filtering
+plink -bfile allchr_bisnp_n282_snpid --maf 0.001 --geno 0.1 --snps-only --make-bed --out allchr_bisnp_n282_snpid_maf001_geno1
+## 45701712 variants and 249 people pass filters and QC.
+
+
+plink -bfile allchr_bisnp_n282_snpid --maf 0.001 --geno 0.5 --snps-only --make-bed --out allchr_bisnp_n282_snpid_maf001_geno5
+## 28014740 variants and 249 people pass filters and QC.
+
+plink -bfile allchr_bisnp_n282_snpid_maf001_geno5 --freq --missing --out allchr_bisnp_n282_snpid_maf001_geno5
+```
+
+
+
+## Plot MAF and Missingness
+
+Genomic data is now located here
+
+get the frq and lmiss data and plot them locally.
+
+```{bash, eval=FALSE}
+scp crane:/common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno5.frq largedata
+```
+
+```{r setup, include=TRUE}
+#setwd("~/Documents/Github/pvpDiallel/")
+knitr::opts_knit$set(root.dir=normalizePath('../../'))
+```
+
+```{r}
+library("data.table")
+
+maf <- fread("largedata/allchr_bisnp_n282_snpid_maf001_geno5.frq", header=TRUE)
+lmiss <- fread("largedata/allchr_bisnp_n282_snpid_maf001_geno5.lmiss", header=TRUE)
+
+
+pdf("graphs/maf_lmiss.pdf", width = 10, height=5)
+par(mfrow=c(1,2))
+hist(maf$MAF, breaks=50, col="#cdb79e", main="MAF (SNP = 28,014,740)", xlab="Minor Allele Freq")
+#abline(v=0.01, lty=2, col="black", lwd=3)
+abline(v=0.05, lty=2, col="red", lwd=3)
+
+hist(lmiss$F_MISS, breaks=35, col="#cdb79e", main="Missingness (SNP = 28,014,740)", xlab="Missing Rate")
+#abline(v=0.6, lty=2, col="red", lwd=3)
+#abline(v=0.05, lty=2, col="red", lwd=3)
+dev.off()
+
+```
+
+
+

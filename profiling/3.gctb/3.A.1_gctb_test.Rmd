@@ -1,0 +1,22 @@
+---
+title: "Test run for GCTB"
+output: html_notebook
+date: 08-16-2018
+author: "Jinliang Yang"
+---
+
+
+```{r setup, include=TRUE}
+#setwd("~/Documents/Github/pvpDiallel/")
+knitr::opts_knit$set(root.dir=normalizePath('../../'))
+```
+
+
+### format phenotype for GCTB
+
+```{r}
+pheno <- read.csv("data/pheno_282set_n37.csv")
+m <- read.csv("data/BLUE_mineral_ziegler.csv")
+
+```
+

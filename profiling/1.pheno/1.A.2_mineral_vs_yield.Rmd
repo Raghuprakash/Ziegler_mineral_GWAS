@@ -1,0 +1,86 @@
+---
+title: "Correlation of GY vs. Mineral"
+output: html_notebook
+date: 08-16-2018
+author: "Jinliang Yang"
+---
+
+
+```{r setup, include=TRUE}
+#setwd("~/Documents/Github/pvpDiallel/")
+knitr::opts_knit$set(root.dir=normalizePath('../../'))
+```
+
+
+## Mineral with Yield
+
+Calculate the correlations of yield and micronutrients
+
+### 1. pheno vs. Zieglar data:
+```{r}
+cal_pcor <- function(trait1_colnum=10, trait2_colnums=20:30, df=my){
+  
+  out <- data.frame()
+  #trait1 <- my[, trait1_colnum]
+  for(i in trait2_colnums){
+    t <- cor.test(df[, trait1_colnum], my[, i])
+    tem <- data.frame(trait1=names(df)[trait1_colnum], trait2=names(df)[i], r=t$estimate, pval=t$p.value)
+    out <- rbind(out, tem)
+  }
+  return(out)
+}
+
+pheno <- read.csv("data/pheno_282set_n37.csv")
+zi <- read.csv("data/BLUE_mineral_ziegler.csv")
+
+
+my <- merge(pheno, zi, by.x="Genotype", by.y="X", all=TRUE)
+
+###>>> get for several x
+outall <- data.frame()
+for(j in c(20:22, 36,38)){
+  out1 <- cal_pcor(trait1_colnum=j, trait2_colnums=39:58, df=my)
+  out1 <- out1[order(out1$r), ]
+  outall <- rbind(outall, out1)
+}
+
+write.table(outall, "cache/cor_pheno_ziegler.csv", sep=",", row.names=FALSE, quote=FALSE)
+
+```
+
+
+Mineral compostion positively correlated with Starch, but negatively correlated with Oil and protein.
+
+
+#### Plotting out the results
+
+```{r}
+df <- read.csv("cache/cor_pheno_ziegler.csv")
+
+df <- subset(df, trait1 %in% c("NIRProtein", "NIRStarch", "X20KernelWeight"))
+df$significance <- "Yes"
+df[df$pval >0.05, ]$significance <- "No"
+
+fsize=16
+p1 <- ggplot(df, aes(x=trait2, y = r, fill=significance)) +
+       geom_bar(stat="identity")  + 
+      #geom_smooth(method = 'lm') +
+      scale_fill_manual(values=c("#999999", "#E69F00")) +
+      facet_wrap( ~ factor(trait1, levels=c("X20KernelWeight", "NIRStarch", "NIRProtein"),
+                           labels = c('Avg. Kernel Weight','NIR Starch','NIR Protein')), ncol=1, scales = 'free_y') +
+      scale_color_brewer(type = 'qual')+
+      #labs(y=NULL, fill="Traits") + theme_bw() +
+      theme(#axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+          axis.text=element_text(size=12),
+          axis.title=element_text(size=fsize, face="bold"),
+          legend.title = element_text(size=fsize, face="bold"),
+          legend.text = element_text(size=fsize),
+          strip.text = element_text(size = fsize, face = "bold")) +
+      xlab("Mineral Composition in Kernel") +
+      ylab("Correlation (r)")
+
+pdf("graphs/yield_mineral.pdf", width=12, height=8)
+p1
+dev.off()
+```
+
