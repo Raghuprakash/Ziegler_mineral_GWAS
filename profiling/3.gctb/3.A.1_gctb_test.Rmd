@@ -14,9 +14,48 @@ knitr::opts_knit$set(root.dir=normalizePath('../../'))
 
 ### format phenotype for GCTB
 
-```{r}
+```{r, eval=FALSE}
 pheno <- read.csv("data/pheno_282set_n37.csv")
+
+
+get_gctb_phen <- function(df, cols=4:5, outdir="largedata/gctb_pheno/"){
+  # df: must contain "FID" (family id), "IID" (individual id)
+  # cols: the idx of the phenotype columns
+  
+  for(i in cols){
+    ### trait name
+    tnm <- names(df)[i]
+    out <- df[, c("FID", "IID", tnm)]
+    ofile <- paste0("largedata/gctb_pheno/", tnm, ".phen")
+    write.table(out, ofile, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+  }
+}
+
+### 
 m <- read.csv("data/BLUE_mineral_ziegler.csv")
+names(m)[1] <- "IID"
+m$FID <- "282set"
+
+get_gctb_phen(df=m, cols=2:(ncol(m)-1), outdir="largedata/gctb_pheno/")
+
+
+### test pheno
+p1 <- read.table("largedata/gctb_pheno/Zn66.phen", header=FALSE)
+
+fam <- read.table("/common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno5.fam", header=FALSE)
+
+p1$V2 <- toupper(p1$V2)
+fam$V2 <- toupper(fam$V2)
+tem <- merge(p1, fam, by="V2")
 
 ```
+
+## Run GCTB:
+
+### S: Similar to C but the variance of SNP effects is related to minor allele frequency (p) through a parameter S
+### NS: nested BayesS.
+```{bash, eval=FALSE}
+gctb --bfile /common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno1 --pheno largedata/gctb_pheno/Zn66.phen --bayes NS --pi 0.05 --hsq 0.5 --S 0 --wind 0.1 --chain-length 410000 --burn-in 10000 --out largedata/bayesNS/test > largedata/bayesNS/test.log
+```
+
 
