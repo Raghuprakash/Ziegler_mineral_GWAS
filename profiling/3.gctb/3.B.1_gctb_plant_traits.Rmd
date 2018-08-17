@@ -1,0 +1,71 @@
+---
+title: "Test run for GCTB"
+output: html_notebook
+date: 08-16-2018
+author: "Jinliang Yang"
+---
+
+
+```{r setup, include=TRUE}
+#setwd("~/Documents/Github/pvpDiallel/")
+knitr::opts_knit$set(root.dir=normalizePath('../../'))
+```
+
+
+### format phenotype for GCTB
+
+```{r, eval=FALSE}
+get_gctb_phen <- function(df, cols=4:5, outdir="largedata/gctb_pheno/"){
+  # df: must contain "FID" (family id), "IID" (individual id)
+  # cols: the idx of the phenotype columns
+  
+  for(i in cols){
+    ### trait name
+    tnm <- names(df)[i]
+    out <- df[, c("FID", "IID", tnm)]
+    ofile <- paste0(outdir, tnm, ".phen")
+    write.table(out, ofile, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+  }
+}
+
+### 
+pheno <- read.csv("data/pheno_282set_n37.csv")
+names(pheno)[1] <- "IID"
+pheno$FID <- "282set"
+
+get_gctb_phen(df=pheno, cols=2:(ncol(pheno)-1), outdir="largedata/gctb_traits/")
+
+```
+
+
+
+## Run BayesS:
+
+```{r}
+library("huskeR")
+
+# gctb --bfile /common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno1 
+# --pheno largedata/gctb_pheno/Zn66.phen --bayes # NS --pi 0.05 --hsq 0.5 --S 0 --wind 0.1 --chain-length 410000 
+# --burn-in 10000 --out largedata/bayesNS/test > largedata/bayesNS/test.log
+
+ph <- list.files(path="largedata/gctb_traits", pattern="phen", full.names =  TRUE)
+out <- gsub("gctb_traits", "bayesS", ph)
+out <- gsub(".phen", "", out)
+
+df <- data.frame(bfile="/common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno1",
+                 pheno=ph,
+                 pi=0.05,
+                 hsq=0.5,
+                 S=0,
+                 chainlength=41000,
+                 burnin=1000,
+                 out=out,
+                 log=paste0(out, ".log")
+                 )
+
+run_gctb(df, bayes="S", shid="run_gtcb_traits",
+         email="yangjl0930@gmail.com", runinfo=c(FALSE, "jclarke", "1", "10G", "8:00:00"))
+
+```
+
+

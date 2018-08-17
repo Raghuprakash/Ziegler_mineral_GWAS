@@ -147,7 +147,7 @@ $(document).ready(function () {
 </style>
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("3.A.2_gctb_ziegler_results.Rmd");
+  window.initializeSourceEmbed("3.B.1_gctb_plant_traits.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
@@ -191,11 +191,8 @@ knitr::opts_knit$set(root.dir=normalizePath('../../'))</code></pre>
 <h3>format phenotype for GCTB</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbInBoZW5vIDwtIHJlYWQuY3N2KFwiZGF0YS9waGVub18yODJzZXRfbjM3LmNzdlwiKSIsIiIsIiIsImdldF9nY3RiX3BoZW4gPC0gZnVuY3Rpb24oZGYsIGNvbHM9NDo1LCBvdXRkaXI9XCJsYXJnZWRhdGEvZ2N0Yl9waGVuby9cIil7IiwiICAjIGRmOiBtdXN0IGNvbnRhaW4gXCJGSURcIiAoZmFtaWx5IGlkKSwgXCJJSURcIiAoaW5kaXZpZHVhbCBpZCkiLCIgICMgY29sczogdGhlIGlkeCBvZiB0aGUgcGhlbm90eXBlIGNvbHVtbnMiLCIgICIsIiAgZm9yKGkgaW4gY29scyl7IiwiICAgICMjIyB0cmFpdCBuYW1lIiwiICAgIHRubSA8LSBuYW1lcyhkZilbaV0iLCIgICAgb3V0IDwtIGRmWywgYyhcIkZJRFwiLCBcIklJRFwiLCB0bm0pXSIsIiAgICBvZmlsZSA8LSBwYXN0ZTAoXCJsYXJnZWRhdGEvZ2N0Yl9waGVuby9cIiwgdG5tLCBcIi5waGVuXCIpIiwiICAgIHdyaXRlLnRhYmxlKG91dCwgb2ZpbGUsIHNlcD1cIlxcdFwiLCByb3cubmFtZXM9RkFMU0UsIGNvbC5uYW1lcz1GQUxTRSwgcXVvdGU9RkFMU0UpIiwiICB9IiwifSIsIiIsIiMjIyAiLCJtIDwtIHJlYWQuY3N2KFwiZGF0YS9CTFVFX21pbmVyYWxfemllZ2xlci5jc3ZcIikiLCJuYW1lcyhtKVsxXSA8LSBcIklJRFwiIiwibSRGSUQgPC0gXCIyODJzZXRcIiIsIiIsImdldF9nY3RiX3BoZW4oZGY9bSwgY29scz0yOihuY29sKG0pLTEpLCBvdXRkaXI9XCJsYXJnZWRhdGEvZ2N0Yl9waGVuby9cIikiXX0= -->
-<pre class="r"><code>pheno &lt;- read.csv(&quot;data/pheno_282set_n37.csv&quot;)
-
-
-get_gctb_phen &lt;- function(df, cols=4:5, outdir=&quot;largedata/gctb_pheno/&quot;){
+<!-- rnb-source-begin eyJkYXRhIjpbImdldF9nY3RiX3BoZW4gPC0gZnVuY3Rpb24oZGYsIGNvbHM9NDo1LCBvdXRkaXI9XCJsYXJnZWRhdGEvZ2N0Yl9waGVuby9cIil7IiwiICAjIGRmOiBtdXN0IGNvbnRhaW4gXCJGSURcIiAoZmFtaWx5IGlkKSwgXCJJSURcIiAoaW5kaXZpZHVhbCBpZCkiLCIgICMgY29sczogdGhlIGlkeCBvZiB0aGUgcGhlbm90eXBlIGNvbHVtbnMiLCIgICIsIiAgZm9yKGkgaW4gY29scyl7IiwiICAgICMjIyB0cmFpdCBuYW1lIiwiICAgIHRubSA8LSBuYW1lcyhkZilbaV0iLCIgICAgb3V0IDwtIGRmWywgYyhcIkZJRFwiLCBcIklJRFwiLCB0bm0pXSIsIiAgICBvZmlsZSA8LSBwYXN0ZTAob3V0ZGlyLCB0bm0sIFwiLnBoZW5cIikiLCIgICAgd3JpdGUudGFibGUob3V0LCBvZmlsZSwgc2VwPVwiXFx0XCIsIHJvdy5uYW1lcz1GQUxTRSwgY29sLm5hbWVzPUZBTFNFLCBxdW90ZT1GQUxTRSkiLCIgIH0iLCJ9IiwiIiwiIyMjICIsInBoZW5vIDwtIHJlYWQuY3N2KFwiZGF0YS9waGVub18yODJzZXRfbjM3LmNzdlwiKSIsIm5hbWVzKHBoZW5vKVsxXSA8LSBcIklJRFwiIiwicGhlbm8kRklEIDwtIFwiMjgyc2V0XCIiLCIiLCJnZXRfZ2N0Yl9waGVuKGRmPXBoZW5vLCBjb2xzPTI6KG5jb2wocGhlbm8pLTEpLCBvdXRkaXI9XCJsYXJnZWRhdGEvZ2N0Yl90cmFpdHMvXCIpIl19 -->
+<pre class="r"><code>get_gctb_phen &lt;- function(df, cols=4:5, outdir=&quot;largedata/gctb_pheno/&quot;){
   # df: must contain &quot;FID&quot; (family id), &quot;IID&quot; (individual id)
   # cols: the idx of the phenotype columns
   
@@ -203,49 +200,17 @@ get_gctb_phen &lt;- function(df, cols=4:5, outdir=&quot;largedata/gctb_pheno/&qu
     ### trait name
     tnm &lt;- names(df)[i]
     out &lt;- df[, c(&quot;FID&quot;, &quot;IID&quot;, tnm)]
-    ofile &lt;- paste0(&quot;largedata/gctb_pheno/&quot;, tnm, &quot;.phen&quot;)
+    ofile &lt;- paste0(outdir, tnm, &quot;.phen&quot;)
     write.table(out, ofile, sep=&quot;\t&quot;, row.names=FALSE, col.names=FALSE, quote=FALSE)
   }
 }
 
 ### 
-m &lt;- read.csv(&quot;data/BLUE_mineral_ziegler.csv&quot;)
-names(m)[1] &lt;- &quot;IID&quot;
-m$FID &lt;- &quot;282set&quot;
+pheno &lt;- read.csv(&quot;data/pheno_282set_n37.csv&quot;)
+names(pheno)[1] &lt;- &quot;IID&quot;
+pheno$FID &lt;- &quot;282set&quot;
 
-get_gctb_phen(df=m, cols=2:(ncol(m)-1), outdir=&quot;largedata/gctb_pheno/&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="batch-job-using-a-gtcb-wrapper-in-husker" class="section level2">
-<h2>Batch job using a GTCB wrapper in <code>huskeR</code></h2>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShcImh1c2tlUlwiKVxuXG4jIGdjdGIgLS1iZmlsZSAvY29tbW9uL2p5YW5nbGFiL2p5YW5nMjEvZGJjZW50ZXIvSGFwTWFwMy9zZXQyODIvYWxsY2hyX2Jpc25wX24yODJfc25waWRfbWFmMDAxX2dlbm8xIFxuIyAtLXBoZW5vIGxhcmdlZGF0YS9nY3RiX3BoZW5vL1puNjYucGhlbiAtLWJheWVzICMgTlMgLS1waSAwLjA1IC0taHNxIDAuNSAtLVMgMCAtLXdpbmQgMC4xIC0tY2hhaW4tbGVuZ3RoIDQxMDAwMCAtLWJ1cm4taW4gMTAwMDAgLS1vdXQgbGFyZ2VkYXRhL2JheWVzTlMvdGVzdCA+IGxhcmdlZGF0YS9iYXllc05TL3Rlc3QubG9nXG5waCA8LSBsaXN0LmZpbGVzKHBhdGg9XCJsYXJnZWRhdGEvZ2N0Yl9waGVub1wiLCBwYXR0ZXJuPVwicGhlblwiLCBmdWxsLm5hbWVzID0gIFRSVUUpXG5vdXQgPC0gZ3N1YihcImdjdGJfcGhlbm9cIiwgXCJiYXllc05TXCIsIHBoKVxub3V0IDwtIGdzdWIoXCIucGhlblwiLCBcIlwiLCBvdXQpXG5cbmRmIDwtIGRhdGEuZnJhbWUoYmZpbGU9XCIvY29tbW9uL2p5YW5nbGFiL2p5YW5nMjEvZGJjZW50ZXIvSGFwTWFwMy9zZXQyODIvYWxsY2hyX2Jpc25wX24yODJfc25waWRfbWFmMDAxX2dlbm8xXCIsXG4gICAgICAgICAgICAgICAgIHBoZW5vPXBoLFxuICAgICAgICAgICAgICAgICBwaT0wLjA1LFxuICAgICAgICAgICAgICAgICBoc3E9MC41LFxuICAgICAgICAgICAgICAgICBTPTAsXG4gICAgICAgICAgICAgICAgIHdpbmQ9MC4xLFxuICAgICAgICAgICAgICAgICBjaGFpbmxlbmd0aD00MTAwMCxcbiAgICAgICAgICAgICAgICAgYnVybmluPTEwMDAsXG4gICAgICAgICAgICAgICAgIG91dD1vdXQsXG4gICAgICAgICAgICAgICAgIGxvZz1wYXN0ZTAob3V0LCBcIi5sb2dcIilcbiAgICAgICAgICAgICAgICAgKVxuXG5ydW5fZ2N0YihkZiwgYmF5ZXM9XCJOU1wiLCBzaGlkPVwicnVuX2d0Y2JcIixcbiAgICAgICAgIGVtYWlsPVwieWFuZ2psMDkzMEBnbWFpbC5jb21cIiwgcnVuaW5mbz1jKEZBTFNFLCBcImpjbGFya2VcIiwgXCIxXCIsIFwiMTBHXCIsIFwiODowMDowMFwiKSlcblxuYGBgIn0= -->
-<pre class="r"><code>library(&quot;huskeR&quot;)
-
-# gctb --bfile /common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno1 
-# --pheno largedata/gctb_pheno/Zn66.phen --bayes # NS --pi 0.05 --hsq 0.5 --S 0 --wind 0.1 --chain-length 410000 --burn-in 10000 --out largedata/bayesNS/test &gt; largedata/bayesNS/test.log
-ph &lt;- list.files(path=&quot;largedata/gctb_pheno&quot;, pattern=&quot;phen&quot;, full.names =  TRUE)
-out &lt;- gsub(&quot;gctb_pheno&quot;, &quot;bayesNS&quot;, ph)
-out &lt;- gsub(&quot;.phen&quot;, &quot;&quot;, out)
-
-df &lt;- data.frame(bfile=&quot;/common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno1&quot;,
-                 pheno=ph,
-                 pi=0.05,
-                 hsq=0.5,
-                 S=0,
-                 wind=0.1,
-                 chainlength=41000,
-                 burnin=1000,
-                 out=out,
-                 log=paste0(out, &quot;.log&quot;)
-                 )
-
-run_gctb(df, bayes=&quot;NS&quot;, shid=&quot;run_gtcb&quot;,
-         email=&quot;yangjl0930@gmail.com&quot;, runinfo=c(FALSE, &quot;jclarke&quot;, &quot;1&quot;, &quot;10G&quot;, &quot;8:00:00&quot;))
-</code></pre>
+get_gctb_phen(df=pheno, cols=2:(ncol(pheno)-1), outdir=&quot;largedata/gctb_traits/&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -254,13 +219,15 @@ run_gctb(df, bayes=&quot;NS&quot;, shid=&quot;run_gtcb&quot;,
 <h2>Run BayesS:</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShcImh1c2tlUlwiKVxuXG4jIGdjdGIgLS1iZmlsZSAvY29tbW9uL2p5YW5nbGFiL2p5YW5nMjEvZGJjZW50ZXIvSGFwTWFwMy9zZXQyODIvYWxsY2hyX2Jpc25wX24yODJfc25waWRfbWFmMDAxX2dlbm8xIFxuIyAtLXBoZW5vIGxhcmdlZGF0YS9nY3RiX3BoZW5vL1puNjYucGhlbiAtLWJheWVzICMgTlMgLS1waSAwLjA1IC0taHNxIDAuNSAtLVMgMCAtLXdpbmQgMC4xIC0tY2hhaW4tbGVuZ3RoIDQxMDAwMCAtLWJ1cm4taW4gMTAwMDAgLS1vdXQgbGFyZ2VkYXRhL2JheWVzTlMvdGVzdCA+IGxhcmdlZGF0YS9iYXllc05TL3Rlc3QubG9nXG5waCA8LSBsaXN0LmZpbGVzKHBhdGg9XCJsYXJnZWRhdGEvZ2N0Yl9waGVub1wiLCBwYXR0ZXJuPVwicGhlblwiLCBmdWxsLm5hbWVzID0gIFRSVUUpXG5vdXQgPC0gZ3N1YihcImdjdGJfcGhlbm9cIiwgXCJiYXllc1NcIiwgcGgpXG5vdXQgPC0gZ3N1YihcIi5waGVuXCIsIFwiXCIsIG91dClcblxuZGYgPC0gZGF0YS5mcmFtZShiZmlsZT1cIi9jb21tb24vanlhbmdsYWIvanlhbmcyMS9kYmNlbnRlci9IYXBNYXAzL3NldDI4Mi9hbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZF9tYWYwMDFfZ2VubzFcIixcbiAgICAgICAgICAgICAgICAgcGhlbm89cGgsXG4gICAgICAgICAgICAgICAgIHBpPTAuMDUsXG4gICAgICAgICAgICAgICAgIGhzcT0wLjUsXG4gICAgICAgICAgICAgICAgIFM9MCxcbiAgICAgICAgICAgICAgICAgd2luZD0wLjEsXG4gICAgICAgICAgICAgICAgIGNoYWlubGVuZ3RoPTQxMDAwLFxuICAgICAgICAgICAgICAgICBidXJuaW49MTAwMCxcbiAgICAgICAgICAgICAgICAgb3V0PW91dCxcbiAgICAgICAgICAgICAgICAgbG9nPXBhc3RlMChvdXQsIFwiLmxvZ1wiKVxuICAgICAgICAgICAgICAgICApXG5cbnJ1bl9nY3RiKGRmLCBiYXllcz1cIlNcIiwgc2hpZD1cInJ1bl9ndGNiXCIsXG4gICAgICAgICBlbWFpbD1cInlhbmdqbDA5MzBAZ21haWwuY29tXCIsIHJ1bmluZm89YyhGQUxTRSwgXCJqY2xhcmtlXCIsIFwiMVwiLCBcIjEwR1wiLCBcIjg6MDA6MDBcIikpXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShcImh1c2tlUlwiKVxuXG4jIGdjdGIgLS1iZmlsZSAvY29tbW9uL2p5YW5nbGFiL2p5YW5nMjEvZGJjZW50ZXIvSGFwTWFwMy9zZXQyODIvYWxsY2hyX2Jpc25wX24yODJfc25waWRfbWFmMDAxX2dlbm8xIFxuIyAtLXBoZW5vIGxhcmdlZGF0YS9nY3RiX3BoZW5vL1puNjYucGhlbiAtLWJheWVzICMgTlMgLS1waSAwLjA1IC0taHNxIDAuNSAtLVMgMCAtLXdpbmQgMC4xIC0tY2hhaW4tbGVuZ3RoIDQxMDAwMCBcbiMgLS1idXJuLWluIDEwMDAwIC0tb3V0IGxhcmdlZGF0YS9iYXllc05TL3Rlc3QgPiBsYXJnZWRhdGEvYmF5ZXNOUy90ZXN0LmxvZ1xuXG5waCA8LSBsaXN0LmZpbGVzKHBhdGg9XCJsYXJnZWRhdGEvZ2N0Yl90cmFpdHNcIiwgcGF0dGVybj1cInBoZW5cIiwgZnVsbC5uYW1lcyA9ICBUUlVFKVxub3V0IDwtIGdzdWIoXCJnY3RiX3RyYWl0c1wiLCBcImJheWVzU1wiLCBwaClcbm91dCA8LSBnc3ViKFwiLnBoZW5cIiwgXCJcIiwgb3V0KVxuXG5kZiA8LSBkYXRhLmZyYW1lKGJmaWxlPVwiL2NvbW1vbi9qeWFuZ2xhYi9qeWFuZzIxL2RiY2VudGVyL0hhcE1hcDMvc2V0MjgyL2FsbGNocl9iaXNucF9uMjgyX3NucGlkX21hZjAwMV9nZW5vMVwiLFxuICAgICAgICAgICAgICAgICBwaGVubz1waCxcbiAgICAgICAgICAgICAgICAgcGk9MC4wNSxcbiAgICAgICAgICAgICAgICAgaHNxPTAuNSxcbiAgICAgICAgICAgICAgICAgUz0wLFxuICAgICAgICAgICAgICAgICBjaGFpbmxlbmd0aD00MTAwMCxcbiAgICAgICAgICAgICAgICAgYnVybmluPTEwMDAsXG4gICAgICAgICAgICAgICAgIG91dD1vdXQsXG4gICAgICAgICAgICAgICAgIGxvZz1wYXN0ZTAob3V0LCBcIi5sb2dcIilcbiAgICAgICAgICAgICAgICAgKVxuXG5ydW5fZ2N0YihkZiwgYmF5ZXM9XCJTXCIsIHNoaWQ9XCJydW5fZ3RjYl90cmFpdHNcIixcbiAgICAgICAgIGVtYWlsPVwieWFuZ2psMDkzMEBnbWFpbC5jb21cIiwgcnVuaW5mbz1jKEZBTFNFLCBcImpjbGFya2VcIiwgXCIxXCIsIFwiMTBHXCIsIFwiODowMDowMFwiKSlcblxuYGBgIn0= -->
 <pre class="r"><code>library(&quot;huskeR&quot;)
 
 # gctb --bfile /common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno1 
-# --pheno largedata/gctb_pheno/Zn66.phen --bayes # NS --pi 0.05 --hsq 0.5 --S 0 --wind 0.1 --chain-length 410000 --burn-in 10000 --out largedata/bayesNS/test &gt; largedata/bayesNS/test.log
-ph &lt;- list.files(path=&quot;largedata/gctb_pheno&quot;, pattern=&quot;phen&quot;, full.names =  TRUE)
-out &lt;- gsub(&quot;gctb_pheno&quot;, &quot;bayesS&quot;, ph)
+# --pheno largedata/gctb_pheno/Zn66.phen --bayes # NS --pi 0.05 --hsq 0.5 --S 0 --wind 0.1 --chain-length 410000 
+# --burn-in 10000 --out largedata/bayesNS/test &gt; largedata/bayesNS/test.log
+
+ph &lt;- list.files(path=&quot;largedata/gctb_traits&quot;, pattern=&quot;phen&quot;, full.names =  TRUE)
+out &lt;- gsub(&quot;gctb_traits&quot;, &quot;bayesS&quot;, ph)
 out &lt;- gsub(&quot;.phen&quot;, &quot;&quot;, out)
 
 df &lt;- data.frame(bfile=&quot;/common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno1&quot;,
@@ -268,14 +235,13 @@ df &lt;- data.frame(bfile=&quot;/common/jyanglab/jyang21/dbcenter/HapMap3/set282
                  pi=0.05,
                  hsq=0.5,
                  S=0,
-                 wind=0.1,
                  chainlength=41000,
                  burnin=1000,
                  out=out,
                  log=paste0(out, &quot;.log&quot;)
                  )
 
-run_gctb(df, bayes=&quot;S&quot;, shid=&quot;run_gtcb&quot;,
+run_gctb(df, bayes=&quot;S&quot;, shid=&quot;run_gtcb_traits&quot;,
          email=&quot;yangjl0930@gmail.com&quot;, runinfo=c(FALSE, &quot;jclarke&quot;, &quot;1&quot;, &quot;10G&quot;, &quot;8:00:00&quot;))
 </code></pre>
 <!-- rnb-source-end -->
@@ -284,7 +250,7 @@ run_gctb(df, bayes=&quot;S&quot;, shid=&quot;run_gtcb&quot;,
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiVGVzdCBydW4gZm9yIEdDVEIiCm91dHB1dDogaHRtbF9ub3RlYm9vawpkYXRlOiAwOC0xNi0yMDE4CmF1dGhvcjogIkppbmxpYW5nIFlhbmciCi0tLQoKCmBgYHtyIHNldHVwLCBpbmNsdWRlPVRSVUV9CiNzZXR3ZCgifi9Eb2N1bWVudHMvR2l0aHViL3B2cERpYWxsZWwvIikKa25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXI9bm9ybWFsaXplUGF0aCgnLi4vLi4vJykpCmBgYAoKCiMjIyBmb3JtYXQgcGhlbm90eXBlIGZvciBHQ1RCCgpgYGB7ciwgZXZhbD1GQUxTRX0KcGhlbm8gPC0gcmVhZC5jc3YoImRhdGEvcGhlbm9fMjgyc2V0X24zNy5jc3YiKQoKCmdldF9nY3RiX3BoZW4gPC0gZnVuY3Rpb24oZGYsIGNvbHM9NDo1LCBvdXRkaXI9ImxhcmdlZGF0YS9nY3RiX3BoZW5vLyIpewogICMgZGY6IG11c3QgY29udGFpbiAiRklEIiAoZmFtaWx5IGlkKSwgIklJRCIgKGluZGl2aWR1YWwgaWQpCiAgIyBjb2xzOiB0aGUgaWR4IG9mIHRoZSBwaGVub3R5cGUgY29sdW1ucwogIAogIGZvcihpIGluIGNvbHMpewogICAgIyMjIHRyYWl0IG5hbWUKICAgIHRubSA8LSBuYW1lcyhkZilbaV0KICAgIG91dCA8LSBkZlssIGMoIkZJRCIsICJJSUQiLCB0bm0pXQogICAgb2ZpbGUgPC0gcGFzdGUwKCJsYXJnZWRhdGEvZ2N0Yl9waGVuby8iLCB0bm0sICIucGhlbiIpCiAgICB3cml0ZS50YWJsZShvdXQsIG9maWxlLCBzZXA9Ilx0Iiwgcm93Lm5hbWVzPUZBTFNFLCBjb2wubmFtZXM9RkFMU0UsIHF1b3RlPUZBTFNFKQogIH0KfQoKIyMjIAptIDwtIHJlYWQuY3N2KCJkYXRhL0JMVUVfbWluZXJhbF96aWVnbGVyLmNzdiIpCm5hbWVzKG0pWzFdIDwtICJJSUQiCm0kRklEIDwtICIyODJzZXQiCgpnZXRfZ2N0Yl9waGVuKGRmPW0sIGNvbHM9MjoobmNvbChtKS0xKSwgb3V0ZGlyPSJsYXJnZWRhdGEvZ2N0Yl9waGVuby8iKQoKYGBgCgoKIyMgQmF0Y2ggam9iIHVzaW5nIGEgR1RDQiB3cmFwcGVyIGluIGBodXNrZVJgCgpgYGB7cn0KbGlicmFyeSgiaHVza2VSIikKCiMgZ2N0YiAtLWJmaWxlIC9jb21tb24vanlhbmdsYWIvanlhbmcyMS9kYmNlbnRlci9IYXBNYXAzL3NldDI4Mi9hbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZF9tYWYwMDFfZ2VubzEgCiMgLS1waGVubyBsYXJnZWRhdGEvZ2N0Yl9waGVuby9abjY2LnBoZW4gLS1iYXllcyAjIE5TIC0tcGkgMC4wNSAtLWhzcSAwLjUgLS1TIDAgLS13aW5kIDAuMSAtLWNoYWluLWxlbmd0aCA0MTAwMDAgLS1idXJuLWluIDEwMDAwIC0tb3V0IGxhcmdlZGF0YS9iYXllc05TL3Rlc3QgPiBsYXJnZWRhdGEvYmF5ZXNOUy90ZXN0LmxvZwpwaCA8LSBsaXN0LmZpbGVzKHBhdGg9ImxhcmdlZGF0YS9nY3RiX3BoZW5vIiwgcGF0dGVybj0icGhlbiIsIGZ1bGwubmFtZXMgPSAgVFJVRSkKb3V0IDwtIGdzdWIoImdjdGJfcGhlbm8iLCAiYmF5ZXNOUyIsIHBoKQpvdXQgPC0gZ3N1YigiLnBoZW4iLCAiIiwgb3V0KQoKZGYgPC0gZGF0YS5mcmFtZShiZmlsZT0iL2NvbW1vbi9qeWFuZ2xhYi9qeWFuZzIxL2RiY2VudGVyL0hhcE1hcDMvc2V0MjgyL2FsbGNocl9iaXNucF9uMjgyX3NucGlkX21hZjAwMV9nZW5vMSIsCiAgICAgICAgICAgICAgICAgcGhlbm89cGgsCiAgICAgICAgICAgICAgICAgcGk9MC4wNSwKICAgICAgICAgICAgICAgICBoc3E9MC41LAogICAgICAgICAgICAgICAgIFM9MCwKICAgICAgICAgICAgICAgICB3aW5kPTAuMSwKICAgICAgICAgICAgICAgICBjaGFpbmxlbmd0aD00MTAwMCwKICAgICAgICAgICAgICAgICBidXJuaW49MTAwMCwKICAgICAgICAgICAgICAgICBvdXQ9b3V0LAogICAgICAgICAgICAgICAgIGxvZz1wYXN0ZTAob3V0LCAiLmxvZyIpCiAgICAgICAgICAgICAgICAgKQoKcnVuX2djdGIoZGYsIGJheWVzPSJOUyIsIHNoaWQ9InJ1bl9ndGNiIiwKICAgICAgICAgZW1haWw9InlhbmdqbDA5MzBAZ21haWwuY29tIiwgcnVuaW5mbz1jKEZBTFNFLCAiamNsYXJrZSIsICIxIiwgIjEwRyIsICI4OjAwOjAwIikpCgpgYGAKCgojIyBSdW4gQmF5ZXNTOgoKYGBge3J9CmxpYnJhcnkoImh1c2tlUiIpCgojIGdjdGIgLS1iZmlsZSAvY29tbW9uL2p5YW5nbGFiL2p5YW5nMjEvZGJjZW50ZXIvSGFwTWFwMy9zZXQyODIvYWxsY2hyX2Jpc25wX24yODJfc25waWRfbWFmMDAxX2dlbm8xIAojIC0tcGhlbm8gbGFyZ2VkYXRhL2djdGJfcGhlbm8vWm42Ni5waGVuIC0tYmF5ZXMgIyBOUyAtLXBpIDAuMDUgLS1oc3EgMC41IC0tUyAwIC0td2luZCAwLjEgLS1jaGFpbi1sZW5ndGggNDEwMDAwIC0tYnVybi1pbiAxMDAwMCAtLW91dCBsYXJnZWRhdGEvYmF5ZXNOUy90ZXN0ID4gbGFyZ2VkYXRhL2JheWVzTlMvdGVzdC5sb2cKcGggPC0gbGlzdC5maWxlcyhwYXRoPSJsYXJnZWRhdGEvZ2N0Yl9waGVubyIsIHBhdHRlcm49InBoZW4iLCBmdWxsLm5hbWVzID0gIFRSVUUpCm91dCA8LSBnc3ViKCJnY3RiX3BoZW5vIiwgImJheWVzUyIsIHBoKQpvdXQgPC0gZ3N1YigiLnBoZW4iLCAiIiwgb3V0KQoKZGYgPC0gZGF0YS5mcmFtZShiZmlsZT0iL2NvbW1vbi9qeWFuZ2xhYi9qeWFuZzIxL2RiY2VudGVyL0hhcE1hcDMvc2V0MjgyL2FsbGNocl9iaXNucF9uMjgyX3NucGlkX21hZjAwMV9nZW5vMSIsCiAgICAgICAgICAgICAgICAgcGhlbm89cGgsCiAgICAgICAgICAgICAgICAgcGk9MC4wNSwKICAgICAgICAgICAgICAgICBoc3E9MC41LAogICAgICAgICAgICAgICAgIFM9MCwKICAgICAgICAgICAgICAgICB3aW5kPTAuMSwKICAgICAgICAgICAgICAgICBjaGFpbmxlbmd0aD00MTAwMCwKICAgICAgICAgICAgICAgICBidXJuaW49MTAwMCwKICAgICAgICAgICAgICAgICBvdXQ9b3V0LAogICAgICAgICAgICAgICAgIGxvZz1wYXN0ZTAob3V0LCAiLmxvZyIpCiAgICAgICAgICAgICAgICAgKQoKcnVuX2djdGIoZGYsIGJheWVzPSJTIiwgc2hpZD0icnVuX2d0Y2IiLAogICAgICAgICBlbWFpbD0ieWFuZ2psMDkzMEBnbWFpbC5jb20iLCBydW5pbmZvPWMoRkFMU0UsICJqY2xhcmtlIiwgIjEiLCAiMTBHIiwgIjg6MDA6MDAiKSkKCmBgYAoKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiVGVzdCBydW4gZm9yIEdDVEIiCm91dHB1dDogaHRtbF9ub3RlYm9vawpkYXRlOiAwOC0xNi0yMDE4CmF1dGhvcjogIkppbmxpYW5nIFlhbmciCi0tLQoKCmBgYHtyIHNldHVwLCBpbmNsdWRlPVRSVUV9CiNzZXR3ZCgifi9Eb2N1bWVudHMvR2l0aHViL3B2cERpYWxsZWwvIikKa25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXI9bm9ybWFsaXplUGF0aCgnLi4vLi4vJykpCmBgYAoKCiMjIyBmb3JtYXQgcGhlbm90eXBlIGZvciBHQ1RCCgpgYGB7ciwgZXZhbD1GQUxTRX0KZ2V0X2djdGJfcGhlbiA8LSBmdW5jdGlvbihkZiwgY29scz00OjUsIG91dGRpcj0ibGFyZ2VkYXRhL2djdGJfcGhlbm8vIil7CiAgIyBkZjogbXVzdCBjb250YWluICJGSUQiIChmYW1pbHkgaWQpLCAiSUlEIiAoaW5kaXZpZHVhbCBpZCkKICAjIGNvbHM6IHRoZSBpZHggb2YgdGhlIHBoZW5vdHlwZSBjb2x1bW5zCiAgCiAgZm9yKGkgaW4gY29scyl7CiAgICAjIyMgdHJhaXQgbmFtZQogICAgdG5tIDwtIG5hbWVzKGRmKVtpXQogICAgb3V0IDwtIGRmWywgYygiRklEIiwgIklJRCIsIHRubSldCiAgICBvZmlsZSA8LSBwYXN0ZTAob3V0ZGlyLCB0bm0sICIucGhlbiIpCiAgICB3cml0ZS50YWJsZShvdXQsIG9maWxlLCBzZXA9Ilx0Iiwgcm93Lm5hbWVzPUZBTFNFLCBjb2wubmFtZXM9RkFMU0UsIHF1b3RlPUZBTFNFKQogIH0KfQoKIyMjIApwaGVubyA8LSByZWFkLmNzdigiZGF0YS9waGVub18yODJzZXRfbjM3LmNzdiIpCm5hbWVzKHBoZW5vKVsxXSA8LSAiSUlEIgpwaGVubyRGSUQgPC0gIjI4MnNldCIKCmdldF9nY3RiX3BoZW4oZGY9cGhlbm8sIGNvbHM9MjoobmNvbChwaGVubyktMSksIG91dGRpcj0ibGFyZ2VkYXRhL2djdGJfdHJhaXRzLyIpCgpgYGAKCgoKIyMgUnVuIEJheWVzUzoKCmBgYHtyfQpsaWJyYXJ5KCJodXNrZVIiKQoKIyBnY3RiIC0tYmZpbGUgL2NvbW1vbi9qeWFuZ2xhYi9qeWFuZzIxL2RiY2VudGVyL0hhcE1hcDMvc2V0MjgyL2FsbGNocl9iaXNucF9uMjgyX3NucGlkX21hZjAwMV9nZW5vMSAKIyAtLXBoZW5vIGxhcmdlZGF0YS9nY3RiX3BoZW5vL1puNjYucGhlbiAtLWJheWVzICMgTlMgLS1waSAwLjA1IC0taHNxIDAuNSAtLVMgMCAtLXdpbmQgMC4xIC0tY2hhaW4tbGVuZ3RoIDQxMDAwMCAKIyAtLWJ1cm4taW4gMTAwMDAgLS1vdXQgbGFyZ2VkYXRhL2JheWVzTlMvdGVzdCA+IGxhcmdlZGF0YS9iYXllc05TL3Rlc3QubG9nCgpwaCA8LSBsaXN0LmZpbGVzKHBhdGg9ImxhcmdlZGF0YS9nY3RiX3RyYWl0cyIsIHBhdHRlcm49InBoZW4iLCBmdWxsLm5hbWVzID0gIFRSVUUpCm91dCA8LSBnc3ViKCJnY3RiX3RyYWl0cyIsICJiYXllc1MiLCBwaCkKb3V0IDwtIGdzdWIoIi5waGVuIiwgIiIsIG91dCkKCmRmIDwtIGRhdGEuZnJhbWUoYmZpbGU9Ii9jb21tb24vanlhbmdsYWIvanlhbmcyMS9kYmNlbnRlci9IYXBNYXAzL3NldDI4Mi9hbGxjaHJfYmlzbnBfbjI4Ml9zbnBpZF9tYWYwMDFfZ2VubzEiLAogICAgICAgICAgICAgICAgIHBoZW5vPXBoLAogICAgICAgICAgICAgICAgIHBpPTAuMDUsCiAgICAgICAgICAgICAgICAgaHNxPTAuNSwKICAgICAgICAgICAgICAgICBTPTAsCiAgICAgICAgICAgICAgICAgY2hhaW5sZW5ndGg9NDEwMDAsCiAgICAgICAgICAgICAgICAgYnVybmluPTEwMDAsCiAgICAgICAgICAgICAgICAgb3V0PW91dCwKICAgICAgICAgICAgICAgICBsb2c9cGFzdGUwKG91dCwgIi5sb2ciKQogICAgICAgICAgICAgICAgICkKCnJ1bl9nY3RiKGRmLCBiYXllcz0iUyIsIHNoaWQ9InJ1bl9ndGNiX3RyYWl0cyIsCiAgICAgICAgIGVtYWlsPSJ5YW5namwwOTMwQGdtYWlsLmNvbSIsIHJ1bmluZm89YyhGQUxTRSwgImpjbGFya2UiLCAiMSIsICIxMEciLCAiODowMDowMCIpKQoKYGBgCgoK</div>
 
 
 

@@ -70,6 +70,32 @@ run_gctb(df, bayes="NS", shid="run_gtcb",
 ```
 
 
+## Run BayesS:
 
+```{r}
+library("huskeR")
+
+# gctb --bfile /common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno1 
+# --pheno largedata/gctb_pheno/Zn66.phen --bayes # NS --pi 0.05 --hsq 0.5 --S 0 --wind 0.1 --chain-length 410000 --burn-in 10000 --out largedata/bayesNS/test > largedata/bayesNS/test.log
+ph <- list.files(path="largedata/gctb_pheno", pattern="phen", full.names =  TRUE)
+out <- gsub("gctb_pheno", "bayesS", ph)
+out <- gsub(".phen", "", out)
+
+df <- data.frame(bfile="/common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno1",
+                 pheno=ph,
+                 pi=0.05,
+                 hsq=0.5,
+                 S=0,
+                 wind=0.1,
+                 chainlength=41000,
+                 burnin=1000,
+                 out=out,
+                 log=paste0(out, ".log")
+                 )
+
+run_gctb(df, bayes="S", shid="run_gtcb",
+         email="yangjl0930@gmail.com", runinfo=c(FALSE, "jclarke", "1", "10G", "8:00:00"))
+
+```
 
 
