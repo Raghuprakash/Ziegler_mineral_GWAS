@@ -1,0 +1,49 @@
+---
+title: "Grab GCTB parRes"
+output: html_notebook
+date: 08-19-2018
+author: "Jinliang Yang"
+---
+
+
+```{r setup, include=TRUE}
+#setwd("~/Documents/Github/pvpDiallel/")
+knitr::opts_knit$set(root.dir=normalizePath('../../'))
+```
+
+
+### format phenotype for GCTB
+
+```{r, eval=FALSE}
+get_gctb_parres <- function(path="largedata/bayesS"){
+  # df: must contain "FID" (family id), "IID" (individual id)
+  # cols: the idx of the phenotype columns
+  
+  files <- list.files(path, pattern="parRes", full.names = TRUE)
+  message(sprintf("###>>> [%s] files detected!", length(files)))
+  
+  res <- data.frame()
+  for(i in 1:length(files)){
+    ### read in the file by skip the first two rows:
+    pres <- read.table(files[i], skip = 2)
+    pres$par <- row.names(pres)
+    pres$file <- files[i]
+    pres$trait <- gsub(".*/|.parRes", "", pres$file)
+    res <- rbind(res, pres)
+  }
+  return(res)
+}
+
+### 
+out <- get_gctb_parres(path="largedata/bayesS")
+s <- subset(out, par == "S")
+
+pi <- subset(out, par == "Pi")
+
+hsq <- subset(out, par == "hsq")
+```
+
+
+
+
+
