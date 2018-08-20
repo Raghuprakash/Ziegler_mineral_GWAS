@@ -55,7 +55,9 @@ cbPalette=c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#
   
 
 files <- list.files(path="largedata/bayesS/", pattern = "Par", full.names = TRUE)
-i=16
+i=55
+
+i=36
 files[i]
 
 
@@ -86,9 +88,9 @@ p1 <- ggplot(data=df2, aes(x=mcmc, y=value, color=parm))+
           strip.text = element_text(size = fsize, face = "bold")) +
       xlab("Iteraction (Markov Chain Monte Carlo)") +
       ylab("")
-
+p1
 ### output
-pdf("graphs/trace_plot_earrownumber.pdf", width=8, height=12)
+pdf("graphs/trace_plot_numberoftilleringplants.pdf", width=8, height=12)
 p1
 dev.off()
 
