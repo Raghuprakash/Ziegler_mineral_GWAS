@@ -1,0 +1,86 @@
+---
+title: "Grab mht plot"
+output: html_notebook
+date: 08-20-2018
+author: "Jinliang Yang"
+---
+
+
+```{r setup, include=TRUE}
+#setwd("~/Documents/Github/pvpDiallel/")
+knitr::opts_knit$set(root.dir=normalizePath('../../'))
+```
+
+
+### format phenotype for GCTB
+
+```{r, eval=FALSE}
+library("huskeR")
+files <- list.files(path="largedata/bayesS/", pattern = "snpRes", full.names = TRUE)
+i=55
+
+i=16
+files[i]
+df <- read.table(files[i], header=T)
+names(df)[3:4] <- c("chr", "pos")
+
+
+
+pdf(paste0("graphs/mht_", gsub(".*\\/|.snpRes", "", files[i]), ".pdf"), height=5, width=10)
+plot_mht(df, col2plot="Effect", jmph=FALSE, pl=FALSE,
+                     cl_file = "~/bin/zmSNPtools/Rcodes/chr_length_B73v3.csv",
+                     cex=.3, pch=16, col=rep(c("slateblue", "cyan4"), 5),
+                     GAP=5e+06, yaxis=NULL, ylab="Effect Size")
+dev.off()
+```
+
+
+
+
+```{r}
+
+library(cowplot)
+library(ggplot2)
+library("tidyr")
+cbPalette=c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+  
+
+
+
+
+
+df <- read.table(files[i], header=T)
+df$mcmc <- 1:nrow(df)
+df2 <- gather(df, parm, value, c("Pi", "NNZsnp", "S", "hsq"))
+#df3 <- subset(df3, trait %in% c("Fe57", "Zn66", "Cu65", "Cd111"))
+#df3$type <- "Micronutrient Traits"
+
+#library(dplyr) 
+fsize=16 
+p1 <- ggplot(data=df2, aes(x=mcmc, y=value, color=parm))+
+        #geom_line(color=cbPalette[4])+
+        geom_line()+
+        
+        facet_wrap( ~ factor(parm, levels=c("Pi", "NNZsnp", "S", "hsq"),
+                         labels=c("Pi (Porportion of non-zero effect SNPs)", "Number of non-zero effect SNPs", "S (selection coefficient)", "SNP-based Heritability")), 
+                          ncol=1, scales = 'free_y') +
+        scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9", "#009E73")) +
+        theme_bw() +
+  guides(color=FALSE) +
+        theme(#axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+          axis.text=element_text(size=12),
+          axis.title=element_text(size=fsize, face="bold"),
+          legend.title = element_text(size=fsize, face="bold"),
+          legend.text = element_text(size=fsize),
+          strip.text = element_text(size = fsize, face = "bold")) +
+      xlab("Iteraction (Markov Chain Monte Carlo)") +
+      ylab("")
+p1
+### output
+pdf("graphs/trace_plot_numberoftilleringplants.pdf", width=8, height=12)
+p1
+dev.off()
+
+
+```
+
