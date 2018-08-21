@@ -41,6 +41,8 @@ yp[, 4:ncol(yp)] <- apply(yp[, 4:ncol(yp)], 2, function(x){(x-min(x))/diff(range
 
 ## reshape it to long format
 library("tidyr")
+library("ggplot2")
+
 df1 <- gather(yp, trait, value, c("X20KernelWeight", "NIRStarch", "NIRProtein"))
 df1$type <- "Yield Related Traits"
 
@@ -57,7 +59,8 @@ df <- rbind(df1[, c("pedigree", "era_inbred", "era_inbred_year", "trait", "value
 
 fsize=16
 
-p2 <- ggplot(df, aes(x=era_inbred_year, y = value, colour=trait)) +
+p2 <- ggplot(df, aes(x=era_inbred_year, y = value, 
+                     colour=factor(trait, levels=c("Ca43", "Cd111", "Cu65", "Fe57", "K39", "NIRProtein", "NIRStarch", "P31", "S34", "X20KernelWeight", "Zn66"), labels=c("Ca43", "Cd111", "Cu65", "Fe57", "K39", "Protein", "Starch", "P31", "S34", "Yield", "Zn66")))) +
       geom_point()  + 
       geom_smooth(method = 'lm', size=1.6) +
       #scale_fill_manual(values=c("#999999", "#E69F00")) +
@@ -66,6 +69,7 @@ p2 <- ggplot(df, aes(x=era_inbred_year, y = value, colour=trait)) +
                           ncol=1, scales = 'free_y') +
       #scale_color_brewer(type = 'qual')+
       #labs(y=NULL, fill="Traits") + 
+    guides(color=guide_legend(title="Traits")) +
       theme_bw() +
       theme(#axis.text.x=element_blank(), axis.ticks.x=element_blank(),
           axis.text=element_text(size=12),
