@@ -77,7 +77,7 @@ p2 <- ggplot(df, aes(x=era_inbred_year, y = value,
           legend.title = element_text(size=fsize, face="bold"),
           legend.text = element_text(size=fsize),
           strip.text = element_text(size = fsize, face = "bold")) +
-      xlab("Year") +
+      xlab("Year Released") +
       ylab("Normalized Value")
 p2
 
