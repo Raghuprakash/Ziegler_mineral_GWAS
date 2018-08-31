@@ -50,6 +50,7 @@ plink -bfile allchr_bisnp_n282_snpid --maf 0.001 --geno 0.1 --snps-only --make-b
 plink -bfile allchr_bisnp_n282_snpid --maf 0.001 --geno 0.2 --snps-only --make-bed --out allchr_bisnp_n282_snpid_maf001_geno2
 ## 1087547 variants and 249 people pass filters and QC.
 
+plink -bfile allchr_bisnp_n282_snpid_maf001_geno2 --freq --missing --out allchr_bisnp_n282_snpid_maf001_geno2
 ```
 
 

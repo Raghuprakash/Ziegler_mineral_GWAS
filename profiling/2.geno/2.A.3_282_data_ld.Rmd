@@ -1,0 +1,77 @@
+---
+title: "LD calculation for 282 panel"
+output: html_notebook
+date: 08-31-2018
+author: "Jinliang Yang"
+---
+
+## LD 
+
+```{bash, eval=FALSE}
+cd /common/jyanglab/jyang21/dbcenter/HapMap3/set282
+plink -bfile allchr_bisnp_n282_snpid_maf001_geno1 --r2 --ld-window 100 --ld-window-kb 100 --ld-window-r2 0 --out allchr_bisnp_n282_snpid_maf001_geno1
+```
+
+```{r setup, include=TRUE}
+#setwd("~/Documents/Github/pvpDiallel/")
+knitr::opts_knit$set(root.dir=normalizePath('../../'))
+```
+
+
+## Plot LD
+
+```{r, eval=FALSE}
+library("data.table")
+
+df <- fread("/common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_bisnp_n282_snpid_maf001_geno1.ld", data.table=FALSE)
+
+BINSIZE = 100
+df$dist <- df$BP_B -df$BP_A
+df$bin <- round(df$dist/BINSIZE, 0)
+
+library(plyr)
+
+df2 <- ddply(df, .(bin), summarise,
+      meanr2 = mean(R2))
+
+write.table(df2, "cache/ld_in_100bp_bin.csv", sep=",", row.names=FALSE, quote=FALSE)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+library("data.table")
+
+maf <- fread("largedata/allchr_bisnp_n282_snpid_maf001_geno5.frq", header=TRUE)
+lmiss <- fread("largedata/allchr_bisnp_n282_snpid_maf001_geno5.lmiss", header=TRUE)
+
+
+pdf("graphs/maf_lmiss.pdf", width = 10, height=5)
+par(mfrow=c(1,2))
+hist(maf$MAF, breaks=50, col="#cdb79e", main="MAF (SNP = 28,014,740)", xlab="Minor Allele Freq")
+#abline(v=0.01, lty=2, col="black", lwd=3)
+abline(v=0.05, lty=2, col="red", lwd=3)
+
+hist(lmiss$F_MISS, breaks=35, col="#cdb79e", main="Missingness (SNP = 28,014,740)", xlab="Missing Rate")
+#abline(v=0.6, lty=2, col="red", lwd=3)
+#abline(v=0.05, lty=2, col="red", lwd=3)
+dev.off()
+
+```
+
+
+
