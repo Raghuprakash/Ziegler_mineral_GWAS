@@ -18,7 +18,7 @@ knitr::opts_knit$set(root.dir=normalizePath('../../'))
 ```
 
 
-## Plot LD
+## Calculate LD
 
 ```{r, eval=FALSE}
 library("data.table")
@@ -39,6 +39,14 @@ write.table(df2, "cache/ld_in_100bp_bin.csv", sep=",", row.names=FALSE, quote=FA
 ```
 
 
+## Plot LD
+```{r}
+ld <- read.csv("cache/ld_in_100bp_bin.csv")
+
+plot(ld$bin, ld$meanr2)
+
+abline(h=0.02, col="red")
+```
 
 
 
