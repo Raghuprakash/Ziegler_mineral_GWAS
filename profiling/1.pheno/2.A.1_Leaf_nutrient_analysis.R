@@ -102,7 +102,7 @@ p5 <- ggplot(Leaf_nutt,aes(x=N, colour=Treatment)) + geom_density() +
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())
 
-p5
+
 p6 <- ggplot(Leaf_nutt,aes(x=Fe, colour=Treatment)) + geom_density() +
   ylab("Density") +
   xlab("Iron (ppm)")+
@@ -153,6 +153,50 @@ panel2 <- grid.arrange(p5,
              nrow=2)
 
 grid.arrange(panel1,panel2,nrow=2)
-install.packages("grid")
+#install.packages("grid")
+
+rm(list=ls())
+library("corrplot")
+df1<- cor(Leaf_nutt[,c(3:18)],use = "na.or.complete")
+#corrplot(df1, method="ellipse",shade.col=NA, tl.col="black", tl.srt=45, mar=c(0,0,1,0))#method="shade"
+corrplot.mixed(df1, lower.col="black", upper="ellipse",shade.col=NA, tl.col="black", number.cex = .7,tl.srt=45, mar=c(0,0,1,0))#method="shade"
+mtext("Correlation of phenotypic traits_CRRI",line=-5.0,cex=2)
 
 
+#?corrplot
+#?mar
+names(min_com[,-c(1:18)])
+
+min_com=read.csv("~/Ziegler_mineral_GWAS/data/Ziegler_Combined_sorted.csv",header = T,na.strings=NA)
+head(min_com)
+library("corrplot")
+df1 <-min_com[,-c(1:4)]
+head(df1)
+df1<- cor(df1,use = "na.or.complete")
+#corrplot(df1, method="ellipse",shade.col=NA, tl.col="black", tl.srt=45, mar=c(0,0,1,0))#method="shade"
+corrplot.mixed(df1, lower.col="black", upper="ellipse",shade.col=NA, tl.col="black", number.cex = .7,tl.srt=45, mar=c(0,0,1,0))#method="shade"
+mtext("Correlation of mineral traits",line=-5.0,cex=2)
+
+
+rm(s1)
+s1 <- Leaf_nutt[, 2:ncol(Leaf_nutt)]
+s1<- apply(s1[,-1], 2, function(x){(x-min(x))/diff(range(x))})
+head(s1[,-1])
+s1<-as.data.frame(s1)
+?apply
+str(s1)
+attach(Leaf_nutt)
+names(Leaf_nutt[,-1])
+ggplot(s1,aes(x=c("DW","CHL","LA","FW"),colour=Trt)) + geom_density() +
+  ylab("Density") +
+  xlab("Traits")+
+  #ggtitle("Density plot of nitrogen\n under N treatment") +
+  #theme(plot.title = element_text(hjust = 0.5))+
+  #theme(plot.title=element_text(size=12, face="bold"),
+  theme(axis.title.y=element_text(size = 10, vjust=+0.2, face="bold"),
+        axis.title.x=element_text(size = 10, vjust=-0.2, face="bold"),
+        axis.text.y=element_text(size = 10, face="bold"),
+        axis.text.x=element_text(size = 10,face="bold"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+names(s1)
