@@ -83,6 +83,11 @@ dev.off()
 
 Raghu's LD decay analysis:
 
+```{bash}
+
+```
+
+
 ```{r,eval=FALSE}
 library("data.table")
 df <- fread("all_chr_LD.ld",header=T)
