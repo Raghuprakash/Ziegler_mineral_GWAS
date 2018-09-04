@@ -81,5 +81,31 @@ dev.off()
 
 ```
 
+Raghu's LD decay analysis:
+
+```{r,eval=FALSE}
+library("data.table")
+df <- fread("all_chr_LD.ld",header=T)
+#n=1221021
+df<-df[,-c(3,6)]
+head(df)
+df$dist <- df$BP_B - df$BP_A 
+BINSIZE=100
+df$bin=round(df$dist/BINSIZE,0)
+head(df)
+df<-df[,-c(1:4)]
+head(df)
+library(plyr)
+df2 <- ddply(df,.(bin),summarise, meanr2=mean(R2))
+head(df2)
+tail(df2)
+write.table(df2,"ld_in_1kb_bin.csv")
+library("ggplot2")
+ggplot(df2, aes(df2$bin, df2$meanr2)) + geom_point()+ geom_smooth(se=F)
+
+```
+
+
+
 
 
