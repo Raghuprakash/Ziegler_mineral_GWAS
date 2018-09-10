@@ -111,6 +111,35 @@ ggplot(df2, aes(df2$bin, df2$meanr2)) + geom_point()+ geom_smooth(se=F)
 ```
 
 
+```{bash, eval=FALSE}
+cd /work/jyanglab/raghu/jyang/zmhmp/cache/pruned_0.001_0.2/
+plink --bfile all_chr_pruned001_0.2 --recode vcf --out all_chr_pruned001_0.2
 
+vcftools --vcf all_chr_pruned001_0.2.vcf --SNPdensity 100,000 --out all_chr_pruned001_0.2_density100kb
+```
+
+```{r,eval=F}
+
+snpden=read.csv("SNP_density.csv",header=T)
+library(ggplot2)
+ggplot(snpden, aes(snpden$CHROM,snpden$SNP_COUNT)) + geom_point()+
+scale_x_continuous(breaks = seq(min(snpden$CHROM), max(snpden$CHROM)))
+
+ggplot(snpden, aes(snpden$CHROM,snpden$variantsperKb)) + geom_point()+
+  scale_x_continuous(breaks = seq(min(snpden$CHROM), max(snpden$CHROM)))
+
+ggplot(snpden, aes(snpden$CHROM,snpden$variantsperKb)) + geom_point()+
+  scale_x_continuous(breaks = seq(min(snpden$CHROM), max(snpden$CHROM)))
+
+ggplot(snpden, aes(snpden$BIN_START,snpden$SNP_COUNT)) + geom_point()+
+scale_x_continuous(breaks = seq(min(snpden$BIN_START), max(snpden$BIN_START)))
+
+ggplot(snpden, aes(snpden$BIN_START,snpden$variantsperKb)) + geom_point() +
+scale_x_continuous(breaks = seq(min(snpden$BIN_START), max(snpden$BIN_START)))
+
+ggplot(snpden, aes(snpden$CHROM,snpden$BIN_START)) + geom_point() +
+scale_x_continuous(breaks = seq(min(snpden$CHROM), max(snpden$CHROM)))
+
+```
 
 
