@@ -84,14 +84,15 @@ dev.off()
 Raghu's LD decay analysis:
 
 ```{bash}
-
+ /work/jyanglab/raghu/jyang/zmhmp/cache
+ plink --bfile allchr_0.001_0.2 --ld-window-kb 100 --ld-window 100  --r2 --ld-window-r2 0  --out all_chr_LD
 ```
 
 
 ```{r,eval=FALSE}
 library("data.table")
 df <- fread("all_chr_LD.ld",header=T)
-#n=1221021
+#from n=1221021
 df<-df[,-c(3,6)]
 head(df)
 df$dist <- df$BP_B - df$BP_A 
