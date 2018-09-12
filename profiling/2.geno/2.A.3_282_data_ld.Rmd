@@ -97,7 +97,9 @@ df <- fread ("all_chr_LD.ld",header=T)
 df<-df[,-c(3,6)]
 head(df)
 df$dist <- df$BP_B - df$BP_A 
-BINSIZE=100
+#BINSIZE=100
+#BINSIZE=50
+BINSIZE=25
 df$bin=round(df$dist/BINSIZE,0)
 head(df)
 df<-df[,-c(1:4)]
@@ -106,11 +108,36 @@ library(plyr)
 df2 <- ddply(df,.(bin),summarise, meanr2=mean(R2))
 head(df2)
 tail(df2)
-write.table(df2,"ld_in_1kb_bin.csv")
+write.table(df2,"ld_binsize_50.csv")
+
+#plot with 2000 bins
+pdf("ld_binsize_50.pdf")
 library("ggplot2")
-ggplot(df2, aes(df2$bin, df2$meanr2)) + geom_point()+ geom_smooth(se=F) +
-  xlim=c(0,25) +
-  ylim=c(0.0,0.2)
+ggplot(df2, aes(df2$bin, df2$meanr2)) + geom_point()+ geom_smooth(se=F) 
+dev.off()
+
+
+#Zoom-in
+pdf("ld_binsize_50_zoomin.pdf")
+library("ggplot2")
+df3 <- subset(df2,bin<100)
+ggplot(df3, aes(df3$bin, df3$meanr2)) + geom_point()+ geom_smooth(se=F) 
+dev.off()
+#still could not see many points above r2=0.1
+
+#Ignore mean r2 and plot just r2 against distance for the first 10 kb.
+pdf("ld_in_10kb.pdf")
+library("ggplot2")
+df4 <- subset(df,dist<10)
+ggplot(df, aes(df$dist, df$R2)) + geom_smooth(se=F) 
+dev.off()
+
+
+
+pdf("ld_binsize1bp_10kb_window.pdf")
+ggplot(df5, aes(df5$bin, df5$meanr2)) + geom_point()+ geom_smooth(se=F) 
+dev.off()
+
 ```
 
 
@@ -121,7 +148,7 @@ plink --bfile all_chr_pruned001_0.2 --recode vcf --out all_chr_pruned001_0.2
 vcftools --vcf all_chr_pruned001_0.2.vcf --SNPdensity 100,000 --out all_chr_pruned001_0.2_density100kb
 ```
 
-
+#SNP density visualization (not very helpful chunk)
 ```{r,eval=F}
 setwd("~/Ziegler_mineral_GWAS/data")
 snpden=read.csv("SNP_density.csv",header=T)
@@ -148,7 +175,7 @@ scale_x_continuous(breaks = seq(min(snpden$CHROM), max(snpden$CHROM)))
 ```
 
 
-
+#SNP density visualization (with manhattan plots)
 ```{r}
 
 setwd("~/Ziegler_mineral_GWAS/data")
@@ -172,3 +199,46 @@ abline(lm(snpden$variantsperKb~snpden$BIN_START),col="red")
 dev.off()
 
 ```
+
+
+```{r}
+setwd("/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/data")
+library("ggplot2")
+pdf("1bp_bins_10kb-window.pdf")
+df5 <- read.csv("1bp_bins_10kb-window.csv",header=T)
+p1 <- ggplot(df5, aes(df5$bin, df5$meanr2)) + geom_point()+ geom_smooth(se=F) 
+p1 + geom_hline(yintercept=0.055, linetype="dashed", color = "red")
+dev.off()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
