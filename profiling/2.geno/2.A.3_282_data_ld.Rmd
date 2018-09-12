@@ -200,11 +200,22 @@ dev.off()
 
 ```
 
+#LD-decay (with 1bp bins) over 10_kb genomic interval
 
-```{r}
-setwd("/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/data")
+```{r,eval=FALSE}
+
+#on remote
 library("ggplot2")
 pdf("1bp_bins_10kb-window.pdf")
+df4 <- subset(df,dist<10000)
+BINSIZE=1
+df4$bin=round(df4$dist/BINSIZE,0)
+library(plyr)
+df5 <- ddply(df4,.(bin),summarise, meanr2=mean(R2))
+write.csv(df5,"1bp_bins_10kb-window.csv")
+
+#locally
+setwd("/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/data")
 df5 <- read.csv("1bp_bins_10kb-window.csv",header=T)
 p1 <- ggplot(df5, aes(df5$bin, df5$meanr2)) + geom_point()+ geom_smooth(se=F) 
 p1 + geom_hline(yintercept=0.055, linetype="dashed", color = "red")
