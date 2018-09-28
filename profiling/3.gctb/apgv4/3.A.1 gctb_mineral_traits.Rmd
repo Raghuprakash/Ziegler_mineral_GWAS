@@ -1,0 +1,169 @@
+---
+title: "Gctb_apgv4"
+Date:09/21/2018
+output: html_document
+---
+
+#GCTB analysis. Save filenames with .mpi extension.
+
+```{bash}
+#!/bin/sh
+
+#SBATCH --job-name=T1_gctb
+
+#SBATCH --nodes=1
+
+#SBATCH --ntasks-per-node=16
+
+#SBATCH --time=50:00:00
+
+#SBATCH --mem-per-cpu=20G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait1_allchr.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait1_allchr.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 1  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T1_gctb_test > T1_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 2  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out  T2_gctb_test > T2_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 3 --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T3_gctb_test> T3_gctb_test.log 2>&1
+
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 4 --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T4_gctb_test > T4_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 5 --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T5_gctb_test > T5_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 6 --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T6_gctb_test> T6_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 7 --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out  T7_gctb_test > T7_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 8--bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T8_gctb_test > T8_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 9  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T9_gctb_test > T9_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 10  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T10_gctb_test> T10_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 11  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T11_gctb_test> T11_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 12  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T12_gctb_test > T12_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 13  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T13_gctb_test> T13_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 14  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T14_gctb_test > T14_gctb_test.log 2>&1
+
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 15  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T15_gctb_test > T15_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 16  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T16_gctb_test> T16_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 17  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T17_gctb_test > T17_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 18  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T18_gctb_test > T18_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 19  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T19_gctb_test > T19_gctb_test.log 2>&1
+
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUE_mineral_ziegler.txt --mpheno 20  --bayes S --pi 0.1 --hsq 0.5 --chain-length 25000 --burn-in 5000 --out T20_gctb_test > T20_gctb_test.log 2>&1
+
+
+# For Boron
+MCMC cycles completed.
+
+Posterior statistics from MCMC samples:
+
+              Mean  	      SD
+        Pi    0.151669        0.012495
+    NNZsnp    467167.812500   38496.179688
+   SigmaSq    0.000001        0.000001
+         S    0.000000        0.000000
+    ResVar    0.224127        0.051960
+    GenVar    0.069540        0.048620
+       hsq    0.236292        0.161993
+
+Analysis finished: Fri Sep 28 13:25:49 2018
+Computational time: 96:31:53
+```
+
+```{r}
+rm(list=ls())
+#install.packages("cowplot")
+library(cowplot)
+library(ggplot2)
+#install.packages("tidyr")
+library("tidyr")
+
+cbPalette=c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+  
+df <- read.table("~/Ziegler_mineral_GWAS/data/apgv4/T1_gctb_test_30G.log", header=T)
+tail(df)
+df$mcmc <- 1:nrow(df)
+df$mcmc <- df$mcmc *100
+df2 <- gather(df, parm, value, c("Pi", "NNZsnp", "S", "hsq"))
+#df3 <- subset(df3, trait %in% c("Fe57", "Zn66", "Cu65", "Cd111"))
+#df3$type <- "Micronutrient Traits"
+tail(df)
+tail(df2)
+#library(dplyr) 
+fsize=16 
+p1 <- ggplot(data=df2, aes(x=mcmc, y=value, color=parm))+
+        #geom_line(color=cbPalette[4])+
+        geom_line()+
+        
+        facet_wrap( ~ factor(parm, levels=c("Pi", "NNZsnp", "S", "hsq"),
+                         labels=c("Pi (Porportion of non-zero effect SNPs)", "Number of non-zero effect SNPs", "S (selection coefficient)", "SNP-based Heritability")), 
+                          ncol=1, scales = 'free_y') +
+        scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9", "#009E73")) +
+        theme_bw() +
+  guides(color=FALSE) +
+        theme(#axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+          axis.text=element_text(size=12),
+          axis.title=element_text(size=fsize, face="bold"),
+          legend.title = element_text(size=fsize, face="bold"),
+          legend.text = element_text(size=fsize),
+          strip.text = element_text(size = fsize, face = "bold")) +
+      xlab("Iteration (Markov Chain Monte Carlo)") +
+      ylab("")
+p1
+### output
+pdf("~/Ziegler_mineral_GWAS/graphs/agpv4/trace_plot_boron.pdf", width=8, height=12)
+p1
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
