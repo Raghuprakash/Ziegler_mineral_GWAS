@@ -1,0 +1,100 @@
+---
+title: "BLUEs"
+output: html_document
+---
+```{r}
+
+#Read the raw data from 2009 and 2010
+min_com=read.csv("/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/data/Ziegler_Combined_sorted.csv",header = T)
+
+min_com=min_com[,-c(1:4,6:13,15,17)]
+min_com=min_com[,-c(3,4)]
+attach(min_com)
+head(min_com)
+
+write.csv(min_com,file="/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/data/Ziegler_phe.csv")
+
+zie_282 <- read.csv("/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/data/Ziegler_phe.csv",header=T,na.strings = NA)
+head(zie_282)
+summary(zie_282)
+str(zie_282)
+
+zie_282$Year <-as.factor(zie_282$Year)
+
+#######################################################
+#Get BLUE for all traits
+#######################################################
+library(lme4)
+#install.packages("optimx")
+library(optimx)
+
+Line=as.factor(zie_282$pedigree)
+
+
+blues.rb <- function(traits, dat = ".") {
+  b<- as.data.frame(fixef(lmer(paste0(traits, "~ 0 + Line + (1|Year) + 
+                                      (1|Line:Year)"), data = dat,
+                               control = lmerControl(optimizer = "optimx", calc.derivs = FALSE,
+     optCtrl = list(method = "nlminb", starttests = FALSE, kkt = FALSE)))))
+      
+}
+
+
+library(plyr)
+effectvar <- names(zie_282) %in% 
+  c("Year","pedigree")
+
+names(effectvar)
+
+
+traits <- colnames(zie_282[ ,!effectvar])
+
+summary(zie_282)
+                          
+traits
+
+
+blues2015<- as.data.frame(lapply(traits, blues.rb, dat = zie_282))
+
+names(blues2015) <-traits
+
+head(blues2015)
+
+
+
+write.csv(blues2015,file="BLUE_mineral_ziegler_complete.csv")
+
+blue <-read.csv("BLUE_mineral_ziegler_complete.csv", header=T)
+
+#using gsub to remove characters in column https://stackoverflow.com/questions/14871249/can-i-use-gsub-on-each-element-of-a-data-frame
+
+blue[,1]= as.data.frame(gsub("Line","",blue[,1]))
+
+head(blue)
+
+
+#######################################
+#Correlations
+#######################################
+
+install.packages("corrplot")
+library(corrplot)
+#zie_282=zie_282[,-c(1:5)]
+
+pdf(file="/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/graphs/Ziegler_corr_complete.pdf")
+df2 <- cor(blue[,c(2:ncol(blue))],use = "na.or.complete")
+corrplot(df2, method="shade",shade.col=NA, tl.col="black", tl.srt=45)
+dev.off()
+
+corr_coef=round(df2,digits=2)
+corr_coef
+write.csv(corr_coef,file="/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/graphs/Correlation_coefficients_Ziegler_complete.csv")
+
+round(df2,digits=2)
+
+
+
+
+
+```
+
