@@ -132,38 +132,319 @@ p1
 pdf("~/Ziegler_mineral_GWAS/graphs/agpv4/trace_plot_boron.pdf", width=8, height=12)
 p1
 dev.off()
+                                                                                                                                                
+
+```
+
+```{bash}
+#with 1100 iterations and 100 burn into get the results rom first run
+[raghu@login.crane apgv4]$ tail T10_gctb_test_30G_run1.log
+        Pi    0.104283        0.003531       
+    NNZsnp    321111.593750   10811.239258   
+   SigmaSq    0.000300        0.000013       
+         S    0.000000        0.000000       
+    ResVar    4.994203        1.312193       
+    GenVar    12.199145       1.160608       
+       hsq    0.711104        0.063557                         
+
+##Get PCs using plink: Related documentation available at 
+https://www.biostars.org/p/271694/
+https://www.biostars.org/p/326758/
+
+#By default plink produces 20 PCs, we can specify the number of PCs we need
+plink --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pca 10 var-wts --out pca_maf0005_geno1_r201
+6.5264
+4.54309
+3.94777
+3.58171
+3.48282
+3.34786
+3.18532
+3.15261
+3.08542
+3.00943
+
+```
+
+#subsetted first 3 pcs for using as a covariate in gctb
+```{r}
+eigen <- data.frame(read.table("pca_maf0005_geno1_r201.eigenvec", header=FALSE, skip=0, sep=" "))
+rownames(eigen) <- eigen[,2]
+eigen <- eigen[,c(1:5)]
+write.csv(eigen,"pca_maf0005_geno1_r201_top3_pcs.csv")
+```
+
+```{bash}
+tr ',' '\t' < pca_maf0005_geno1_r201_top3_pcs.csv >pca_maf0005_geno1_r201_top3_pcs.txt #transform delimiter
+
+sed 's/\"//g' pca_maf0005_geno1_r201_top3_pcs.txt > pca_maf0005_geno1_r201_top3_pcs_new.txt #removes quotes
+
+awk '{$1=""; print $0}' pca_maf0005_geno1_r201_top3_pcs_new.txt >pca_maf0005_geno1_r201_top3_pcs.txt # to filter column
+
+#Sample --covar file
+'''[raghu@c0401.crane apgv4]$ head pca_maf0005_geno1_r201_top3_pcs_new.txt
+FID  IID PC1 PC2 PC3
+ 282set 33-16 -0.0324919 -0.000606599 0.0244391
+ 282set 38-11Goodman-Buckler -0.0470689 -0.00570321 -0.00372294
+ 282set 4226 -0.0271548 -0.00105938 0.0199683
+ 282set 4722 -0.0404898 0.00682655 0.131463
+ 282set A6 0.0906579 0.0223418 -0.0178671
+ 282set A188 -0.0307402 -0.000959044 0.0322203
+ 282set A214NGoodman-Buckler -0.0377738 -0.00586757 -0.129892
+ 282set A239 -0.0395108 -0.00788368 -0.0116936
+ 282set A441-5 -0.00594948 0.0141381 0.016108'''
+ 
+ 
+############################
+#Changed gctb run for traits with moderate to high heritability and relatively more important
+############################
+
+#For Fe,m=10
+ 
+#!/bin/sh
+
+#SBATCH --job-name=T10_n16_gctb
+
+#SBATCH --ntasks=16
+
+#SBATCH --time=100:00:00
+
+#SBATCH --mem-per-cpu=4G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait10_allchr.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait10_allchr.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top3 PCs as covariates
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 10 --covar pca_maf0005_geno1_r201_top3_pcs.txt  --bayes S --pi 0.1 --hsq 0.5 --chain-length 1100 --burn-in 100 --out T10_gctb_30G_run1_withpcs > T10_gctb_30G_run1_withpcs.log 2>&1
+#mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 10 --covar pca_maf0005_geno1_r201_top3_pcs.txt --bayes S --pi 0.1 --hsq 0.5 --chain-length 41000 --burn-in 10000 --out T10_gctb_30G_run2 > T10_gctb_30G_run2.log 2>&1
+
+
+############################
+
+#For Zn,m=14
+
+#!/bin/sh
+
+#SBATCH --job-name=T14_n16_gctb
+
+#SBATCH --ntasks=16
+
+#SBATCH --time=100:00:00
+
+#SBATCH --mem-per-cpu=4G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait14_allchr.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait14_allchr.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+#with top3 PCs as covariates
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 14 --covar pca_maf0005_geno1_r201_top3_pcs.txt  --bayes S --pi 0.1 --hsq 0.5 --chain-length 1100 --burn-in 100 --out T14_gctb_30G_run1_withpcs > T14_gctb_30G_run1_withpcs.log 2>&1
+#mpirun -np 32 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 10 --covar pca_maf0005_geno1_r201_top3_pcs.txt --bayes S --pi 0.1 --hsq 0.5 --chain-length 41000 --burn-in 10000 --out T10_gctb_30G_run2 > T10_gctb_30G_run2.log 2>&1
+
+############################
+
+#For Cu,m=13
+
+#!/bin/sh
+
+#SBATCH --job-name=T13_n16_gctb
+
+#SBATCH --ntasks=16
+
+#SBATCH --time=100:00:00
+
+#SBATCH --mem-per-cpu=4G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait13_allchr.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait13_allchr.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+#with top3 PCs as covariates
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 13 --covar pca_maf0005_geno1_r201_top3_pcs.txt  --bayes S --pi 0.1 --hsq 0.5 --chain-length 1100 --burn-in 100 --out T13_gctb_30G_run1_withpcs > T13_gctb_30G_run1_withpcs.log 2>&1
+#mpirun -np 32 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 10 --covar pca_maf0005_geno1_r201_top3_pcs.txt --bayes S --pi 0.1 --hsq 0.5 --chain-length 41000 --burn-in 10000 --out T10_gctb_30G_run2 > T10_gctb_30G_run2.log 2>&1
+
+##############################
+#For Mn,m=9
+
+#!/bin/sh
+
+#SBATCH --job-name=T14_n16_gctb
+
+#SBATCH --ntasks=16
+
+#SBATCH --time=100:00:00
+
+#SBATCH --mem-per-cpu=4G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait9_allchr.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait9_allchr.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+#with top3 PCs as covariates
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 9 --covar pca_maf0005_geno1_r201_top3_pcs.txt  --bayes S --pi 0.1 --hsq 0.5 --chain-length 1100 --burn-in 100 --out T9_gctb_30G_run1_withpcs > T9_gctb_30G_run1_withpcs.log 2>&1
+#mpirun -np 32 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 10 --covar pca_maf0005_geno1_r201_top3_pcs.txt --bayes S --pi 0.1 --hsq 0.5 --chain-length 41000 --burn-in 10000 --out T10_gctb_30G_run2 > T10_gctb_30G_run2.log 2>&1
+
+#########################
+#For Mo, m=19
+
+#!/bin/sh
+
+#SBATCH --job-name=T19_n16_gctb
+
+#SBATCH --ntasks=16
+
+#SBATCH --time=100:00:00
+
+#SBATCH --mem-per-cpu=4G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait19_allchr.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait19_allchr.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+#with top3 PCs as covariates
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 19 --covar pca_maf0005_geno1_r201_top3_pcs.txt  --bayes S --pi 0.1 --hsq 0.5 --chain-length 1100 --burn-in 100 --out T19_gctb_30G_run1_withpcs > T19_gctb_30G_run1_withpcs.log 2>&1
+#mpirun -np 32 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 10 --covar pca_maf0005_geno1_r201_top3_pcs.txt --bayes S --pi 0.1 --hsq 0.5 --chain-length 41000 --burn-in 10000 --out T10_gctb_30G_run2 > T10_gctb_30G_run2.log 2>&1
+
+#####################################
+#For Mg,m=3
+
+#!/bin/sh
+
+#SBATCH --job-name=T3_n16_gctb
+
+#SBATCH --ntasks=16
+
+#SBATCH --time=100:00:00
+
+#SBATCH --mem-per-cpu=4G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait3_allchr.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait3_allchr.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+#with top3 PCs as covariates
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 3 --covar pca_maf0005_geno1_r201_top3_pcs.txt  --bayes S --pi 0.1 --hsq 0.5 --chain-length 1100 --burn-in 100 --out T3_gctb_30G_run1_withpcs > T3_gctb_30G_run1_withpcs.log 2>&1
+#mpirun -np 32 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 10 --covar pca_maf0005_geno1_r201_top3_pcs.txt --bayes S --pi 0.1 --hsq 0.5 --chain-length 41000 --burn-in 10000 --out T10_gctb_30G_run2 > T10_gctb_30G_run2.log 2>&1
+
+
+####################################
+#For P,m=5
+
+#!/bin/sh
+
+#SBATCH --job-name=T5_n16_gctb
+
+#SBATCH --ntasks=16
+
+#SBATCH --time=100:00:00
+
+#SBATCH --mem-per-cpu=4G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait5_allchr.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait5_allchr.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+#with top3 PCs as covariates
+mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 5 --covar pca_maf0005_geno1_r201_top3_pcs.txt  --bayes S --pi 0.1 --hsq 0.5 --chain-length 1100 --burn-in 100 --out T5_gctb_30G_run1_withpcs > T5_gctb_30G_run1_withpcs.log 2>&1
+#mpirun -np 32 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 10 --covar pca_maf0005_geno1_r201_top3_pcs.txt --bayes S --pi 0.1 --hsq 0.5 --chain-length 41000 --burn-in 10000 --out T10_gctb_30G_run2 > T10_gctb_30G_run2.log 2>&1
 
 
 
+```
+
+```{r}
+
+cd /lustre/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+#Used the file T10_gctb_test_30G_run1_withpcs.snpRes file to subset the SNP effects affecting Fe concentration
+  
+library(data.table)
+df2=fread("snpRes_Fe.txt",header=T)
+
+##Between 0 and 0.01
+df3=df2[which(Freq<=0.01),]
+#Classes ‘data.table’ and 'data.frame':	1235044 obs. of  7 variables:
+df3 <-  transform(df3, group=cut(Freq, breaks=c(-Inf, 0.001, 0.002, 0.003,0.004,0.005,0.006,0.007,0.008,0.009,0.01,Inf),
+      labels=c(0,0.001,0.002,0.003,0.004,0.005,0.006,0.007,0.008,0.009,0.01)))
+
+head(df3)
+
+res2 <-do.call(data.frame,aggregate(df3$Effect~group, df3, 
+        FUN=function(x) c(Count=length(x), Sum=sum(x))))
+
+'''
+group df3.Effect.Count df3.Effect.Sum
+1     0            35569       0.089493
+2 0.002           124161      -0.086862
+3 0.004           175277      -0.210641
+4 0.005           150358       0.195551
+5 0.007           559040       0.150796
+6 0.008              395       0.014149
+7 0.009           190244      -0.467020
+'''
 
 
+##Between 0.01 to 0.1
+df4=df2[which(Freq<=0.1),]
+#Classes ‘data.table’ and 'data.frame':	2668950 obs. of  7 variables:
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+      labels=c('<0.01',0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
 
+head(df4)
 
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+        FUN=function(x) c(Count=length(x), Sum=sum(x))))
 
+'''group df4.Effect.Count df4.Effect.Sum
+1  <0.01          1235044      -0.314534
+2   0.01           688760      -0.343754
+3   0.02           264038      -0.189313
+4   0.03           148900       0.028069
+5   0.04           101646       0.331834
+6   0.05            72271      -0.069616
+7   0.06            55473       0.101053
+8   0.07            42453       0.123751
+9   0.08            33501       0.095844
+10  0.09            26864      -0.001712'''
 
+##Between 0.1 to 1
 
+df5 <-  transform(df2, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+      labels=c('<0.1',0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
 
+head(df5)
 
+res4 <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+        FUN=function(x) c(Count=length(x), Sum=sum(x))))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+'''group df5.Effect.Count df5.Effect.Sum
+1  <0.1          2668950      -0.238378
+2   0.1           121637      -0.093653
+3   0.2            44914       0.009517
+4   0.3            53471      -0.174963
+5   0.4           160452      -0.328161
+6   0.5            30731       0.009011
 ```
 
