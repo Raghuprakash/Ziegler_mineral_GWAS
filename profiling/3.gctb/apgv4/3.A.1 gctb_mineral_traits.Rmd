@@ -381,7 +381,9 @@ cd /lustre/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apg
 #Used the file T10_gctb_test_30G_run1_withpcs.snpRes file to subset the SNP effects affecting Fe concentration
   
 library(data.table)
-df2=fread("snpRes_Fe.txt",header=T)
+df2=fread("snpRes_Fe_run1.txt",header=F)
+
+#colnames(df2) <-c("X","Name","Chrom","Position","Freq","Effect","SE")
 
 ##Between 0 and 0.01
 df3=df2[which(Freq<=0.01),]
@@ -446,5 +448,22 @@ res4 <-do.call(data.frame,aggregate(df5$Effect~group, df5,
 4   0.3            53471      -0.174963
 5   0.4           160452      -0.328161
 6   0.5            30731       0.009011
+
+library(ggplot2)
+# Basic histogram
+pdf("Effects_Fe_run1_001.pdf")
+ggplot(res2, aes(x=group,y=df3.Effect.Sum)) + geom_bar(stat = "identity")
+dev.off()
+
+
+pdf("Effects_Fe_run1_01.pdf")
+ggplot(res3, aes(x=group,y=df4.Effect.Sum)) + geom_bar(stat = "identity")
+dev.off()
+
+
+pdf("Effects_Fe_run1_1.pdf")
+ggplot(res4, aes(x=group,y=df5.Effect.Sum)) + geom_bar(stat = "identity")
+dev.off()
+
 ```
 
