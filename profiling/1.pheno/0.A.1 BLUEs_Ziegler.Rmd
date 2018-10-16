@@ -72,6 +72,35 @@ blue[,1]= as.data.frame(gsub("Line","",blue[,1]))
 
 head(blue)
 
+write.csv(blue,file="/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/data/BLUE_mineral_ziegler_complete.csv")
+
+#make a new column FID filled with 282set
+df1$FID="282set"
+#move the column to the beginning of the dataframe
+df1=subset(df1,select=c(22,1:21))
+
+
+
+
+```
+
+#Format the pheno file to plug into gctb
+```{bash}
+#Double checked IIDs from the original geno file to edit the pheno file accordingly using nano
+
+'''[raghu@c0403.crane apgv4]$ grep -e "Goodman" IID.txt 
+A214NGoodman-Buckler
+CI28AGoodman-Buckler
+Ci90CGoodman-Buckler
+Ci91BGoodman-Buckler
+IA2132Goodman-Buckler
+P39Goodman-Buckler
+
+[raghu@c0403.crane apgv4]$ nano BLUEs_mineral_ziegler_complete.txt'''
+
+```
+
+```{r}
 
 #######################################
 #Correlations
@@ -89,11 +118,6 @@ dev.off()
 corr_coef=round(df2,digits=2)
 corr_coef
 write.csv(corr_coef,file="/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/graphs/Correlation_coefficients_Ziegler_complete.csv")
-
-round(df2,digits=2)
-
-
-
 
 
 ```
