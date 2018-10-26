@@ -1,0 +1,229 @@
+---
+title: "Gerp"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+```
+
+```{bash}
+#The gerp file is too big, so break them up to small chunks and read with fread
+#Remove the column "N" for now from gerp file
+
+awk '{print $1,$2,$4}' /lustre/work/jyanglab/shared/dbcenter/GERP/dicot_monocot_andro2/Maize_GERP_file_AGPv3.txt >Maize_GERP_file_AGPv3_subset.txt
+
+'Chr Pos RS
+1 1 1.51
+1 2 1.51
+1 3 1.51
+1 4 2.47
+1 5 2.47
+
+
+#Use awk to subset by chr
+awk '{ if ($1 >= 1 && $1 <= 5) print $0 }' Maize_GERP_file_AGPv3_subset.txt > Maize_GERP_file_AGPv3_subset_1to5chr.txt
+awk '{ if ($1 >= 6 && $1 <= 10) print $0 }' Maize_GERP_file_AGPv3_subset.txt > Maize_GERP_file_AGPv3_subset_6to10chr.txt
+
+#Filter for RS scores with value=0
+
+awk '{ if ($3 != 0) print $0 }' Maize_GERP_file_AGPv3_subset_1to5chr.txt > Maize_GERP_file_AGPv3_subset_1to5chr_flt.txt
+awk '{ if ($3 != 0) print $0 }' Maize_GERP_file_AGPv3_subset_6to10chr.txt > Maize_GERP_file_AGPv3_subset_6to10chr_flt.txt
+
+#merge the above 2 subsets in R using codes below for further processing
+
+
+```
+
+```{r}
+library(data.table)
+
+df1=fread("Maize_GERP_file_AGPv3_subset_1to5chr_flt.txt",header=F)
+head(df1)
+colnames(df1) <- c("Chr","Pos","RS")
+
+df2=fread("Maize_GERP_file_AGPv3_subset_6to10chr_flt.txt",header=F)
+ colnames(df2) <- c("Chr","Pos","RS")
+head(df2)
+
+#Combine the above 2 frames to get data for all 10 chr (with RS score != 0)
+
+df3=rbind(df1,df2)
+head(df3)
+
+'> head(df3)
+   Chr Pos   RS
+1:   1   1 1.51
+2:   1   2 1.51
+3:   1   3 1.51
+4:   1   4 2.47
+5:   1   5 2.47
+6:   1   6 2.47'
+
+df4=fread("3.08miSNPs_V4toV3.v3_pos.txt",header=T)
+df4=subset(df4,select=c("Chr","Pos","Marker"))
+head(df4)
+
+'> head(df4)
+   Chr       Pos   Marker
+1:   1 234568321 S1_10755
+2:   1 234570799 S1_11399
+3:   1 234568375 S1_11781
+4:   1 234530387 S1_12232
+5:   1 234570668 S1_12429
+6:   1 234574507 S1_12465'
+
+
+df5=merge(df3,df4,by=c("Chr","Pos"))
+head(df5)
+
+'> head(df5)
+   Chr Pos     RS   Marker
+1:   1  45  2.470 S1_46074
+2:   1  61  2.470 S1_46090
+3:   1  63 -0.231 S1_46092
+4:   1  79  2.470 S1_46108
+5:   1  95  2.470 S1_46124
+6:   1 108  0.338 S1_46137'
+
+'> length(df5$Chr)
+[1] 204687
+
+> length(df3$Chr)
+[1] 167037126
+
+> length(df4$Chr)
+[1] 2521667'
+
+#This means 204687 SNPs have a non-zero RS score in the 3.08 mi SNP dataset.
+
+
+```
+
+
+```{bash}
+ml plink
+plink -bfile  pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --freq --missing --out  pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1
+```
+
+
+```{r}
+df4 <-  transform(df3, group=cut(MAF, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+      labels=c('<0.1',0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+
+df5=  transform(df4, group=cut(RS, breaks=c(-Inf, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, Inf),
+      labels=c('<-9', -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5)))
+
+head(df4)
+
+
+library(dplyr)
+summarise(group_by(df5, group, group2),count =n())
+
+  'group group2  count
+   <fct> <fct>   <int>
+ 1 <0.1  <-9       318
+ 2 <0.1  -8        334
+ 3 <0.1  -7        569
+ 4 <0.1  -6        747
+ 5 <0.1  -5        792
+ 6 <0.1  -4       1585
+ 7 <0.1  -3       2002
+ 8 <0.1  -2       5317
+ 9 <0.1  -1      14817
+10 <0.1  1      100825
+# ... with 60 more rows'
+
+
+pdf("MAF_and_RS_score_counts_2.pdf")
+ggplot(df6,aes(x=group2,y=count)) + geom_bar(stat="identity") +
+facet_wrap(~ group,ncol=2) +
+ggtitle("Relationship between minor allele frequency and gerp score") +
+theme_update(plot.title = element_text(hjust = 0.5)) +
+xlab("RS scores") +
+ylab("SNP counts") +
+theme_bw()  # I prefer the black and white theme
+
+dev.off()
+
+pdf("MAF_and_RS_score_relationship.pdf")
+ggplot(df6,aes(x=group2,y=count)) + geom_bar(stat="identity") +
+facet_wrap(~ group,ncol=2) +
+ggtitle("Relationship between minor allele frequency and\n gerp score") +
+theme_update(plot.title = element_text(hjust = 0.5)) +
+xlab("RS scores") +
+ylab("SNP counts") +
+theme_bw()  # I prefer the black and white theme
+
+dev.off()
+#geom_hline(yintercept = 1000,col="red",size=0.5)
+
+###################################################
+
+#on local machine
+library(ggplot2)
+
+df1=read.csv("~/Ziegler_mineral_GWAS/data/apgv4/gerp_maf_204K.txt", header=T)
+
+df1=df1[with(df1, order(Chr,Pos)), ]
+
+
+head(df2)
+
+##using bins of 0.01 for gerp score
+
+BINSIZE = 0.01
+df1$bin2 <- round(df1$RS/BINSIZE, 0)
+
+head(df1)
+range(df1$bin)
+
+library(plyr)
+
+df2 <- ddply(df1, .(bin2), summarise,
+      meanMAF= mean(MAF),
+      meanRS=mean(RS))
+
+head(df1)
+length(df2$meanRS)
+range(df2$meanRS)
+
+
+
+pdf("~/Ziegler_mineral_GWAS/graphs/agpv4/MAF_and_RS_score_plot.pdf",height=7, width=10)
+theme_set(theme_gray(base_size = 16))
+#pdf("~/Ziegler_mineral_GWAS/graphs/agpv4/MAF_and_RS_score_plot.pdf",height=7, width=10)
+p1=ggplot(df2, aes(x=meanMAF, y=meanRS)) + 
+geom_point() + geom_smooth() +
+ggtitle("Relationship between minor allele frequency and gerp score") +
+theme_update(plot.title = element_text(hjust = 0.5)) +
+ylab("GERP score") +
+xlab("Allele Frequency") 
+#dev.off()
+
+
+
+#pdf("~/Ziegler_mineral_GWAS/graphs/agpv4/RS_score_MAF_plot.pdf",height=7, width=10)
+p2=ggplot(df2, aes(x=meanRS, y=meanMAF)) + 
+geom_point() + geom_smooth() +
+ggtitle("Relationship between minor allele frequency and gerp\n score") +
+theme_update(plot.title = element_text(hjust = 0.5)) +
+ylab("Allele Frequency") +
+xlab("GERP score") 
+#dev.off()
+
+length(df1$Chr)
+
+
+#204553/2521667
+
+
+
+
+
+```
+
