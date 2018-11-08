@@ -194,7 +194,9 @@ range(df2$meanRS)
 
 
 
-pdf("~/Ziegler_mineral_GWAS/graphs/agpv4/MAF_and_RS_score_plot.pdf",height=7, width=10)
+
+library(gridExtra)
+pdf("~/Ziegler_mineral_GWAS/graphs/agpv4/MAF_and_RS_score_plot.pdf",height=7, width=12)
 theme_set(theme_gray(base_size = 16))
 #pdf("~/Ziegler_mineral_GWAS/graphs/agpv4/MAF_and_RS_score_plot.pdf",height=7, width=10)
 p1=ggplot(df2, aes(x=meanMAF, y=meanRS)) + 
@@ -207,22 +209,26 @@ xlab("Allele Frequency")
 
 
 
-#pdf("~/Ziegler_mineral_GWAS/graphs/agpv4/RS_score_MAF_plot.pdf",height=7, width=10)
-p2=ggplot(df2, aes(x=meanRS, y=meanMAF)) + 
+pdf("~/Ziegler_mineral_GWAS/graphs/agpv4/RS_score_MAF_plot.pdf",height=7, width=10)
+ggplot(df2, aes(x=meanRS, y=meanMAF)) + 
 geom_point() + geom_smooth() +
 ggtitle("Relationship between minor allele frequency and gerp\n score") +
 theme_update(plot.title = element_text(hjust = 0.5)) +
 ylab("Allele Frequency") +
 xlab("GERP score") 
-#dev.off()
+#grid.arrange(p1,p2,nrow=1)
+dev.off()
 
-length(df1$Chr)
+
+grid.arrange(p1,p2,nrow=1)
+
+#length(df1$Chr)
 
 
 #204553/2521667
 
-
-
+length(which(df1$RS >0))
+length(which(df1$RS <0))
 
 
 ```
