@@ -96,6 +96,27 @@ df <- data.frame(bfile="/common/jyanglab/jyang21/dbcenter/HapMap3/set282/allchr_
 run_gctb(df, bayes="S", shid="run_gtcb",
          email="yangjl0930@gmail.com", runinfo=c(FALSE, "jclarke", "1", "10G", "8:00:00"))
 
+
+
+
+
+
+
+
+# Plot the densities of snps in the csv file for each chr seperately
+library(ggplot2)
+snpDensity<-ggplot(snpden) +
+geom_histogram(aes(x=Freq),binwidth=1e3) + # pick a binwidth that is not too small 
+facet_wrap(~ CHROM,ncol=2) + # seperate plots for each chr, x-scales can differ from chr to chr
+ggtitle("SNP density using pruned data_maf0005_geno01_r2_01 (#3.08 million)") +
+theme_update(plot.title = element_text(hjust = 0.5)) +
+xlab("Position in the genome") + 
+ylab("SNP density") + 
+theme_bw() + # I prefer the black and white theme
+ geom_hline(yintercept = 1000,col="red",size=0.5)
+
+
+
 ```
 
 

@@ -1,0 +1,76 @@
+---
+title: "Fe-related-genelist"
+output: html_document
+---
+```{bash}
+
+
+
+
+#Iron related gene list was compiled by looking up the literature (which was actually not much, but based on the info from rice)
+#These are the 2 articles that talk about Fe uptake processes in maize 
+paper1: https://www.tandfonline.com/doi/pdf/10.1080/15592324.2016.1161877?needAccess=true # not very helpful at all
+paper2: https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-016-3478-4 # bettter
+
+#Also obtained the iron acquisition/metabolism pathways using corncyc database
+
+'''Pathways	Pathway pages contain: Depiction of metabolic pathway, of chromosomal locations of pathway genes, and of regulation of pathway genes
+2-deoxymugineic acid phytosiderophore biosynthesis (iron acquisition)
+iron reduction and absorption
+Class: Iron Metabolism
+Fe(III)-phytosiderophore transport (Strategy II iron uptake)
+[2Fe-2S] iron-sulfur cluster biosynthesis'''
+
+https://corncyc-b73-v4.maizegdb.org/CORN/NEW-IMAGE?type=PATHWAY&object=PWY-5912
+https://corncyc-b73-v4.maizegdb.org/CORN/NEW-IMAGE?type=PATHWAY&object=PWY-5925
+https://corncyc-b73-v4.maizegdb.org/CORN/NEW-IMAGE?type=PATHWAY&object=PWY-5934
+https://corncyc-b73-v4.maizegdb.org/CORN/NEW-IMAGE?type=PATHWAY&object=PWY-5937
+
+
+#Gene IDs from the above papers were in a different version compared to apgv4
+# IDs were converted using https://maizegdb.org/gene_center/gene#translate tool.
+
+'''Comprehensive compilation (including genes from above mentioned papers) of gene lists was performed by extracting all the functional genes involved in iron related processes by downloading ftp://ftp.gramene.org/pub/gramene/CURRENT_RELEASE/gff3/zea_mays/gene_function then by '''
+
+grep -E -i 'iron' B73v4.gene_function.txt
+
+grep -E -i 'ferric' B73v4.gene_function.txt
+
+grep -E 'ATPase 2 plasma membrane-type' B73v4.gene_function.txt | grep -v 'Calcium-transporting'
+
+grep -E -i '1-aminocyclopropane-1-carboxylate oxidase' B73v4.gene_function.txt
+
+grep -E -i 'phytase' B73v4.gene_function.txt  >>iron_related_genelist.txt #phys1 and phys2 affect the bioavailability of Fe, Zn, P and Mg https://academic.oup.com/jhered/article/103/1/47/907305
+
+awk '{print $2,$6,$7}' pathway-genes?object=PWY-5925 >>iron_related_genelist.txt 
+awk '{print $2,$6,$7}' pathway-genes?object=PWY-5912 >>iron_related_genelist.txt 
+
+grep -i 'Yellow stripe' B73v4.gene_function.txt >> iron_related_genelist.txt 
+
+awk '{print $2,$6,$7,$8,$9}' pathway-genes?object=PWY-5934 >>iron_related_genelist.txt 
+
+
+#additional H+ ATPases of interest
+Zm00001d011315 iron-chelate-transporting ATPase
+Zm00001d044442 iron-chelate-transporting ATPase
+Zm00001d034940 iron-chelate-transporting ATPase
+Zm00001d003354 iron-chelate-transporting ATPase
+Zm00001d009037 iron-chelate-transporting ATPase
+Zm00001d025012 iron-chelate-transporting ATPase
+Zm00001d046277 iron-chelate-transporting ATPase
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+

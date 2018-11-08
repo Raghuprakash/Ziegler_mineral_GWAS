@@ -166,7 +166,9 @@ plink --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pca 10 var-wt
 
 ```
 
-#subsetted first 3 pcs for using as a covariate in gctb
+
+#Principal Components
+
 ```{r}
 eigen <- data.frame(read.table("pca_maf0005_geno1_r201.eigenvec", header=FALSE, skip=0, sep=" "))
 rownames(eigen) <- eigen[,2]
@@ -532,6 +534,282 @@ dev.off()
 pdf("Effects_Fe_run1_1.pdf")
 ggplot(res4, aes(x=group,y=df5.Effect.Sum)) + geom_bar(stat = "identity")
 dev.off()
+
+```
+
+```{bash}
+## chromosome-wise analysis of Fe trait
+
+#!/bin/sh
+
+#SBATCH --job-name=T10_run1_allchr
+
+#SBATCH --ntasks=40
+
+#SBATCH --time=20:00:00
+
+#SBATCH --mem-per-cpu=5G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait10_allchr_run1.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_trait10_allchr_run1.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top4 PCs as covariates- First run
+
+#mpirun -np 32 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno BLUEs_mineral_ziegler_complete.txt --mpheno 10 --covar pca_maf0005_geno1_r201_top3_pcs.txt  --bayes S --pi 0.1 --hsq 0.5 --chain-length 1100 --burn-in 100 --out T10_gctb_30G_run1_withpcs > T10_gctb_30G_r$
+
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 1 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.5  --chain-length 1100 --burn-in 100 --out Fe_run2_chr1_top10pcs > Fe_chr1_top10pcs.log 2>&1
+                                                                                                                                           mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 2 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.5  --chain-length 1100 --burn-in 100 --out Fe_chr2_top10pcs > Fe_chr2_top10pcs.log 2>&1   
+                                                                                                                                                                                                          
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 3 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.5  --chain-length 1100 --burn-in 100 --out Fe_chr3_top10pcs > Fe_chr3_top10pcs.log 2>&1
+                                                                                                                                          
+                                                                                                                                            mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 4 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.5  --chain-length 1100 --burn-in 100 --out Fe_chr4_top10pcs > Fe_chr4_top10pcs.log 2>&1  
+
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 5 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.5  --chain-length 1100 --burn-in 100 --out Fe_chr5_top10pcs > Fe_chr5_top10pcs.log 2>&1 
+
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 6 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.5  --chain-length 1100 --burn-in 100 --out Fe_chr6_top10pcs > Fe_chr6_top10pcs.log 2>&1
+                                                                                                                                          mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 7 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.5  --chain-length 1100 --burn-in 100 --out Fe_chr7_top10pcs > Fe_chr7_top10pcs.log 2>&1                     
+                                                                                                                                          
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 8 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.5  --chain-length 1100 --burn-in 100 --out Fe_chr8_top10pcs > Fe_chr8_top10pcs.log 2>&1
+                                                                                                                                           mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 9 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.5  --chain-length 1100 --burn-in 100 --out Fe_chr9_top10pcs > Fe_chr9_top10pcs.log 2>&1  
+
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 10 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.5  --chain-length 1100 --burn-in 100 --out Fe_chr10_top10pcs > Fe_chr10_top10pcs.log 2>&1 
+
+#######################################################
+#######################################################
+
+##with top 10 PCs -Run2
+
+#!/bin/sh
+
+#SBATCH --job-name=T10_r2_c1
+
+#SBATCH --ntasks=4
+
+#SBATCH --time=30:00:00
+
+#SBATCH --mem-per-cpu=8G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c1.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c1.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top10 PCs as covariates
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 1 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.71  --chain-length 41000 --burn-in 1000 --out Fe_run2_chr1_top10pcs > Fe_run2_chr1_top10pcs.log 2>&1
+
+
+
+#!/bin/sh
+
+#SBATCH --job-name=T10_r2_c2
+
+#SBATCH --ntasks=4
+
+#SBATCH --time=30:00:00
+
+#SBATCH --mem-per-cpu=8G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c2.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c2.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top10 PCs as covariates
+
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 2 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.08 --hsq 0.57  --chain-length 41000 --burn-in 1000 --out Fe_run2_chr2_top10pcs > Fe_run2_chr2_top10pcs.log 2>&1   
+                                                                                                                                            
+#!/bin/sh
+
+#SBATCH --job-name=T10_r2_c3
+
+#SBATCH --ntasks=4
+
+#SBATCH --time=30:00:00
+
+#SBATCH --mem-per-cpu=8G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c3.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c3.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top10 PCs as covariates                                                              
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 3 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.08 --hsq 0.41  --chain-length 41000 --burn-in 1000 --out Fe_run2_chr3_top10pcs > Fe_run2_chr3_top10pcs.log 2>&1
+                                                                                                                                          
+
+#!/bin/sh
+
+#SBATCH --job-name=T10_r2_c4
+
+#SBATCH --ntasks=4
+
+#SBATCH --time=30:00:00
+
+#SBATCH --mem-per-cpu=8G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c4.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c4.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top10 PCs as covariates         
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 4 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.67  --chain-length 41000 --burn-in 1000 --out Fe_run2_chr4_top10pcs > Fe_run2_chr4_top10pcs.log 2>&1  
+
+
+
+#!/bin/sh
+
+#SBATCH --job-name=T10_r2_c5
+
+#SBATCH --ntasks=4
+
+#SBATCH --time=30:00:00
+
+#SBATCH --mem-per-cpu=8G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c5.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c5.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top10 PCs as covariates
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 5 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.71  --chain-length 41000 --burn-in 1000 --out Fe_run2_chr5_top10pcs > Fe_run2_chr5_top10pcs.log 2>&1 
+
+
+
+#!/bin/sh
+
+#SBATCH --job-name=T10_r2_c6
+
+#SBATCH --ntasks=4
+
+#SBATCH --time=30:00:00
+
+#SBATCH --mem-per-cpu=8G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c6.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c6.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top10 PCs as covariates
+
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 6 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.59  --chain-length 41000 --burn-in 1000 --out Fe_run2_chr6_top10pcs > Fe_run2_chr6_top10pcs.log 2>&1
+
+
+
+#!/bin/sh
+
+#SBATCH --job-name=T10_r2_c7
+
+#SBATCH --ntasks=4
+
+#SBATCH --time=30:00:00
+
+#SBATCH --mem-per-cpu=8G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c7.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c7.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top10 PCs as covariates
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 7 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.5  --chain-length 41000 --burn-in 1000 --out Fe_run2_chr7_top10pcs > Fe_run2_chr7_top10pcs.log 2>&1                     
+
+
+
+#!/bin/sh
+
+#SBATCH --job-name=T10_r2_c8
+
+#SBATCH --ntasks=4
+
+#SBATCH --time=30:00:00
+
+#SBATCH --mem-per-cpu=8G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c8.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c8.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top10 PCs as covariates                                                                                                                                          
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 8 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.65  --chain-length 41000 --burn-in 1000 --out Fe_run2_chr8_top10pcs > Fe_run2_chr8_top10pcs.log 2>&1
+
+
+
+#!/bin/sh
+
+#SBATCH --job-name=T10_r2_c9
+
+#SBATCH --ntasks=4
+
+#SBATCH --time=30:00:00
+
+#SBATCH --mem-per-cpu=8G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c9.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c9.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top10 PCs as covariates
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 9 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.48  --chain-length 41000 --burn-in 1000 --out Fe_run2_chr9_top10pcs > Fe_run2_chr9_top10pcs.log 2>&1  
+
+
+
+#!/bin/sh
+
+#SBATCH --job-name=T10_r2_c10
+
+#SBATCH --ntasks=4
+
+#SBATCH --time=30:00:00
+
+#SBATCH --mem-per-cpu=8G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c10.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/Fe_run2_c10.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#with top10 PCs as covariates
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --chr 10 --pheno BLUEs_mineral_rounded.txt  --mpheno 10 --covar pca_maf0005_geno1_r201_top10_pcs.txt --bayes S --pi 0.1 --hsq 0.49  --chain-length 41000 --burn-in 1000 --out Fe_run2_chr10_top10pcs > Fe_run2_chr10_top10pcs.log 2>&1 
 
 ```
 

@@ -45,10 +45,6 @@ library("tidyr")
 cbPalette=c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
   
 
-
-
-
-
 df <- read.table(files[i], header=T)
 df$mcmc <- 1:nrow(df)
 df2 <- gather(df, parm, value, c("Pi", "NNZsnp", "S", "hsq"))

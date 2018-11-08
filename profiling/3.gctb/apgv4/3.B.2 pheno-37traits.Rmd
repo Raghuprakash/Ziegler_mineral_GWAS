@@ -1,0 +1,55 @@
+---
+title: "Pheno-37"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{bash}
+
+#!/bin/sh
+
+#SBATCH --job-name=X20wt_gctb
+
+#SBATCH --ntasks=4 
+
+#SBATCH --time=100:00:00
+
+#SBATCH --mem-per-cpu=8G
+
+#SBATCH --error=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_x20wt_allchr.err
+#SBATCH --output=/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/slurm-log/apgv4/gctb_x20wt_allchr.out
+
+cd /work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+
+module load compiler/gcc/4.9 openmpi/1.10 gctb/1.0
+
+
+#without covariates
+
+mpirun -np 4 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno  pheno_282_n37_new.txt --mpheno 37 --covar --bayes S --pi 0.1 --hsq 0.5 --chain-length 1100 --burn-in 100 --out X20wt_gctb_run1_withpcs > X20wt_gctb_run2.log 2>&1
+
+#mpirun -np 16 gctb --bfile pruned_r2_01_allchr_agpv4_n282_snpid_maf0005_geno1 --pheno  pheno_282_n37.txt --mpheno 9 --covar pca_maf0005_geno1_r201_top3_pcs.txt --bayes S --pi 0.1 --hsq 0.72 --chain-length 41000 --burn-in 1000 --out T10_gctb_30G_run2_withpcs > T10_gctb_3$
+                                             
+
+
+
+
+
+```
+
+```{r}
+
+
+
+
+
+
+
+
+
+
+```
+
