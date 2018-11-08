@@ -12,6 +12,8 @@ min_com=min_com[,-c(3,4)]
 attach(min_com)
 head(min_com)
 
+summary(min_com)
+
 write.csv(min_com,file="/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/data/Ziegler_phe.csv")
 
 zie_282 <- read.csv("/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/data/Ziegler_phe.csv",header=T,na.strings = NA)
@@ -89,14 +91,22 @@ df1=subset(df1,select=c(22,1:21))
 #Double checked IIDs from the original geno file to edit the pheno file accordingly using nano
 
 '''[raghu@c0403.crane apgv4]$ grep -e "Goodman" IID.txt 
-A214NGoodman-Buckler
-CI28AGoodman-Buckler
-Ci90CGoodman-Buckler
-Ci91BGoodman-Buckler
-IA2132Goodman-Buckler
-P39Goodman-Buckler
+282set	38-11Goodman-Buckler
+282set	A214NGoodman-Buckler
+282set	CI28AGoodman-Buckler
+282set	Ci7Goodman-Buckler
+282set	Ci90CGoodman-Buckler
+282set	Ci91BGoodman-Buckler
+282set	Hi27Goodman-Buckler
+282set	IA2132Goodman-Buckler
+282set	P39Goodman-Buckler
 
-[raghu@c0403.crane apgv4]$ nano BLUEs_mineral_ziegler_complete.txt'''
+##combine columns from different files using awk
+paste <(awk '{print $3}'  pheno_282set_n37_new.txt  ) <(awk '{print $2}' lines282.txt) 
+  pheno_282_n37.txt 
+  
+  320/24gctb
+  
 
 ```
 
