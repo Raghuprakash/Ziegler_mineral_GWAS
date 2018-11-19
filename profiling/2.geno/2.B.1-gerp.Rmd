@@ -227,9 +227,57 @@ grid.arrange(p1,p2,nrow=1)
 
 #204553/2521667
 
-length(which(df1$RS >0))
-length(which(df1$RS <0))
+rsp1 <- df2[which(df2$meanRS >0),]
+#136544
+
+head(rsp1)
+
+ggplot(rsp1, aes(x=meanRS, y=meanMAF)) + 
+geom_point() + geom_smooth() +
+ggtitle("Relationship between minor allele frequency and gerp\n score") +
+theme_update(plot.title = element_text(hjust = 0.5)) +
+ylab("Allele Frequency") +
+xlab("GERP score") 
 
 
+
+rsn1 <- df2[which(df2$meanRS <0),]
+#68009
+
+head(rsn1)
+
+install.packages("ggpubr")
+library(ggpubr)
+
+
+pdf("~/Ziegler_mineral_GWAS/graphs/agpv4/RS_score_signs_MAF_plot.pdf",height=6, width=12)
+p1=ggplot(rsp1, aes(x=meanRS, y=meanMAF)) + 
+geom_point() + geom_smooth(method="lm") +
+#ggtitle("Relationship between minor allele frequency and gerp\n score") +
+theme_update(plot.title = element_text(hjust = 0.5)) +
+ylab("Allele Frequency") +
+xlab("GERP score") 
+
+
+p2=ggplot(rsn1, aes(x=meanRS, y=meanMAF)) + 
+geom_point() + geom_smooth(method="lm") +
+#ggtitle("Relationship between minor allele frequency and gerp\n score") +
+theme_update(plot.title = element_text(hjust = 0.5)) +
+ylab("Allele Frequency") +
+xlab("GERP score") 
+grid.arrange(p1,p2,nrow=1)
+dev.off()
+
+#l1+stat_cor(method = "pearson", label.x = 2, label.y = 0.4)
+
+
+length(which(df1$RS >1))
+#56064
+length(which(df1$RS >2))
+#29600
+length(which(df1$RS >3))
+#17410
+length(which(df1$RS >4))
+#7403
 ```
 
