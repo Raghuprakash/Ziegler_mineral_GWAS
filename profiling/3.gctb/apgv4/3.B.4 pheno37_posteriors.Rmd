@@ -1,0 +1,704 @@
+---
+title: "Pheno37-posteriors-analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+
+```{r}
+
+####
+#Visualize posteriors
+####
+
+myData=read.csv("~/Ziegler_mineral_GWAS/data/apgv4/Posteriors_37pheno.csv",header=T)
+head(myData)
+library(reshape2)
+myData[max(myData$Pi_mean),]
+
+library(ggplot2)
+
+str(myData)
+
+dodge <- position_dodge(width = 0.9)
+limits_S <- aes(ymax = myData$S_mean + myData$S_sd,
+              ymin = myData$S_mean - myData$S_sd)
+
+attach(myData)
+
+p1 <- ggplot(data = myData, aes(x = myData$Trait, y = myData$S_mean, fill=PCs, group = PCs))
+p1
+
+##S
+p1=p1+ geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits_S, position = dodge, width = 0.25) + ylim (-1.0,1.0) +
+  xlab ("Traits") +
+  ylab ("S") +
+theme(axis.text.x = element_text(face="bold", color="#993333", 
+                                 size=10, angle=45, vjust=0.95, hjust=0.95))
+p1
+
+pdf("Posterior_S_37pheno.pdf", height=6, width=12)
+p1
+dev.off()
+
+
+##Pi
+
+limits_Pi <- aes(ymax = myData$Pi_mean + myData$Pi_sd,
+                ymin = myData$Pi_mean - myData$Pi_sd)
+
+p2 <- ggplot(data = myData, aes(x = myData$Trait, y = myData$Pi_mean, fill=PCs, group = PCs))
+
+p2=p2+ geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits_Pi, position = dodge, width = 0.25) + ylim (0,0.5) +
+  xlab ("Traits") +
+  ylab ("Pi") +
+  theme(axis.text.x = element_text(face="bold", color="#993333", 
+                                   size=10, angle=45,vjust=0.95, hjust=0.95))
+p2
+
+pdf("Posterior_Pi_37pheno.pdf", height=6, width=12)
+p2
+dev.off()
+
+##hsq
+
+limits_hsq <- aes(ymax = myData$hsq_mean + myData$hsq_sd,
+                 ymin = myData$hsq_mean - myData$hsq_sd)
+
+p3 <- ggplot(data = myData, aes(x = myData$Trait, y = myData$hsq_mean, fill=PCs, group = PCs))
+
+p3=p3+ geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits_hsq, position = dodge, width = 0.25) + ylim (0,1) +
+  xlab ("Traits") +
+  ylab ("hsq") +
+  theme(axis.text.x = element_text(face="bold", color="#993333", 
+                                   size=10, angle=45,vjust=0.95, hjust=0.95))
+p3
+
+pdf("Posterior_hsq_37pheno.pdf", height=6, width=12)
+p3
+dev.off()
+
+'''#####
+#mcmc runs
+#####
+
+
+library(cowplot)
+library(ggplot2)
+library("tidyr")
+cbPalette=c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+get_gctb_log <- function(path="~/Ziegler_mineral_GWAS/data/apgv4/Traits_log"){
+
+  files <- list.files(path, pattern="log", full.names = TRUE)
+  message(sprintf("###>>> [%s] files detected!", length(files)))
+  
+res <- data.frame()
+for(i in 1:length(files)){
+  ### read in the file by skip the first two rows:
+  pres <- read.table(files[i],header=F,fill=T,skip=38)
+  pres$file <- files[i]
+  pres$trait <- gsub(".*/|.log", "", pres$file)
+  res <- rbind(res, pres)
+}
+return(res)
+}
+
+
+out <- get_gctb_log(path="~/Ziegler_mineral_GWAS/data/apgv4/Traits_log")
+library(data.table)
+
+fwrite(out,"gctb_bayesS_37phenologs.csv",sep=",")
+
+df1=read.csv("gctb_bayesS_37phenologs.csv",header=T)
+
+head(df1)
+
+df1=subset(df1,select=c(14,1:13))'''
+
+
+
+
+
+##########################################
+#Compare bayesC with bayesS for 3 traits
+##########################################
+
+rm(list=ls())
+cp1=read.csv("~/Ziegler_mineral_GWAS/data/apgv4/Post_bayescVsS.csv")
+
+
+dodge <- position_dodge(width = 0.9)
+
+attach(cp1)
+str(cp1)
+head(cp1)
+##Pi
+library(ggplot2)
+
+limits_Pi <- aes(ymax = cp1$Pi_mean + cp1$Pi_sd,
+                 ymin = cp1$Pi_mean - cp1$Pi_sd)
+
+p2 <- ggplot(data = cp1, aes(x = cp1$Trait, y = cp1$Pi_mean,fill=PCs, group=PCs))
+
+p2=p2+ geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits_Pi, position = dodge, width = 0.25) + 
+  xlab ("Traits") +
+  ylab ("Pi") +
+  theme(axis.text.x = element_text(face="bold", color="#993333", 
+                                   size=10, angle=45,vjust=0.95, hjust=0.95))
+p2
+
+str(cp1)
+
+
+
+pdf("Posterior_Pi_37pheno.pdf", height=6, width=12)
+p2
+dev.off()
+
+##hsq
+
+limits_hsq <- aes(ymax = cp1$hsq_mean + cp1$hsq_sd,
+                  ymin = cp1$hsq_mean - cp1$hsq_sd)
+
+p3 <- ggplot(data = cp1, aes(x = cp1$Trait, y = cp1$hsq_mean, fill=PCs, group = PCs))
+
+p3=p3+ geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(limits_hsq, position = dodge, width = 0.25)+
+  xlab ("Traits") +
+  ylab ("hsq") +
+  theme(axis.text.x = element_text(face="bold", color="#993333", 
+                                   size=10, angle=45,vjust=0.95, hjust=0.95))
+p3
+
+pdf("Posterior_hsq_37pheno.pdf", height=6, width=12)
+p3
+dev.off()
+
+library(gridExtra)
+
+grid.arrange(p2, p3, nrow = 1)
+
+pdf("bayesSvsC.pdf")
+grid.arrange(p2, p3, ncol = 1)
+dev.off()
+
+##########################################
+#Get the correlations for 37 traits
+##########################################       
+#install.packages("corrplot")
+library(corrplot)
+#zie_282=zie_282[,-c(1:5)]
+
+df1=read.table("~/Ziegler_mineral_GWAS/data/apgv4/pheno_282_n37_new.txt",header=T)
+head(df1)
+df1=as.data.frame(df1)
+
+df2 <- cor(df1[,c(3:ncol(df1))],use = "na.or.complete")
+
+??corrplot
+corr_coef=round(df2,digits=2)
+corr_coef
+write.csv(corr_coef,file="/Users/rkastooriramamurth2/Ziegler_mineral_GWAS/graphs/Correlation_coefficients_Ziegler_complete.csv")
+
+
+'''require(ggpubr)
+require(tidyverse)
+install.packages("Hmisc")
+require(Hmisc)
+
+cor_5 <- rcorr(as.matrix(df1[,c(3:ncol(df1))]))
+M <- cor_5$r
+p_mat <- cor_5$P
+corrplot(M, method = "color", type = "upper", order = "hclust", 
+         p.mat = p, sig.level = 0.01)
+
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(df2, method = "color", col = col(200),  
+         type = "upper", order = "hclust", 
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col = "darkblue", tl.srt = 45, #Text label color and rotation
+         # Combine with significance level
+         p.mat = p, sig.level = 0.01,  
+         # hide correlation coefficient on the principal diagonal
+         diag = FALSE 
+)'''
+
+
+rm(list=ls())
+
+pdf("testcorr.pdf",height=14, width = 18)
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(df2, method = "color", col = col(200),  
+         type = "upper", order = "hclust", 
+         addCoef.col = "black", 
+         number.cex = 0.8,
+         number.font = 2,
+         cl.cex = 1.5, # Add coefficient of correlation
+         tl.col = "darkblue", tl.srt = 30, tl.cex=1, #Text label color and rotation
+         # Combine with significance level
+         #p.mat = cor_2$P , sig.level = 0.01,  
+         # hide correlation coefficient on the principal diagonal
+         diag = FALSE)
+
+dev.off()
+
+##################################
+##subset the SNP effects by mafs
+##################################
+
+cd /lustre/work/jyanglab/raghu/jyang/projects/Ziegler_mineral_GWAS/largedata/apgv4/
+  
+#Work on 8 traits prot, x20wt, no. of tillers per plant, plant height, upper leaf angle, ear length, ear weight and KRN
+  
+library(data.table)
+df2=fread("Trait20_gctb_run2_nopcs.snpRes",header=F)
+
+#colnames(df2) <-c("X","Name","Chrom","Position","Freq","Effect","SE")
+
+
+#####
+#NOTP-nopcs
+#####
+
+library(data.table)
+df2=fread("Trait22_gctb_run2_nopcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4 <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4
+
+
+
+########
+#NOTP-withpcs
+########
+
+rm(list=ls())
+
+library(data.table)
+df2=fread("Trait22_gctb_run2_10pcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4 <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4
+
+
+#######
+#prot-nopcs
+#######
+
+rm(list=ls())
+
+library(data.table)
+df2=fread("Trait20_gctb_run2_nopcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4 <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4
+
+######
+#prot-10pcs
+######
+
+rm(list=ls())
+
+library(data.table)
+df2=fread("Trait20_gctb_run2_10pcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4 <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4
+
+
+#######
+#x20-wt-nopcs
+#######
+rm(list=ls())
+
+library(data.table)
+df2=fread("Trait37_gctb_run2_nopcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4 <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4
+
+
+#######
+#x20-wt-10pcs
+#######
+rm(list=ls())
+library(data.table)
+df2=fread("Trait37_gctb_run2_10pcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4 <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4
+
+
+##########################################################
+
+
+#####
+#Earlength-nopcs
+#####
+rm(list=ls())
+library(data.table)
+df2=fread("Trait7_gctb_run2_nopcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4_earlength_nopcs <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4_earlength_nopcs
+
+
+
+########
+#Earlength-withpcs
+########
+
+rm(list=ls())
+
+library(data.table)
+df2=fread("Trait7_gctb_run2_10pcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4_earlength_withpcs <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4_earlength_withpcs
+
+
+#######
+#Upperleafangle-nopcs
+#######
+
+rm(list=ls())
+
+library(data.table)
+df2=fread("Trait36_gctb_run2_nopcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4_ULA_nopcs <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4_ULA_nopcs
+
+######
+#Upperleafangle-10pcs
+######
+
+rm(list=ls())
+
+library(data.table)
+df2=fread("Trait36_gctb_run2_10pcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4_ULA_withpcs <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4_ULA_withpcs
+
+
+#######
+#KRN_nopcs
+#######
+rm(list=ls())
+library(data.table)
+df2=fread("Trait8_gctb_run2_nopcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4_KRN_nopcs <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4_KRN_nopcs
+
+
+#######
+#KRN-10pcs
+#######
+rm(list=ls())
+library(data.table)
+df2=fread("Trait8_gctb_run2_10pcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4_KRN_withpcs <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4_KRN_withpcs 
+
+#######################################################################
+
+
+#######
+#Earweight-nopcs
+#######
+
+rm(list=ls())
+
+library(data.table)
+df2=fread("Trait9_gctb_run2_nopcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4_Earweight_nopcs <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4_Earweight_nopcs
+
+######
+#Earweight-10pcs
+######
+
+rm(list=ls())
+
+library(data.table)
+df2=fread("Trait9_gctb_run2_10pcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4_Earweight_10pcs <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4_Earweight_10pcs
+
+
+#######
+#Pltht_nopcs
+#######
+rm(list=ls())
+
+library(data.table)
+df2=fread("Trait23_gctb_run2_nopcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4_Pltht_nopcs <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4_Pltht_nopcs
+
+
+#######
+#Pltht-10pcs
+#######
+rm(list=ls())
+library(data.table)
+df2=fread("Trait23_gctb_run2_10pcs.snpRes")
+length(df2$Name)
+df4=df2[which(Freq<=0.1),]
+length(df4$Name)
+df4 <-  transform(df4, group=cut(Freq, breaks=c(-Inf, 0.01, 0.02, 0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,Inf),
+labels=c("<0.01",0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1)))
+head(df4)
+res3 <-do.call(data.frame,aggregate(df4$Effect~group, df4, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res3
+df5=df2[which(Freq<= 1),]
+df5 <-  transform(df5, group=cut(Freq, breaks=c(-Inf, 0.1, 0.2, 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,Inf),
+labels=c("<0.1",0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)))
+head(df5)
+res4_Pltht_10pcs <-do.call(data.frame,aggregate(df5$Effect~group, df5, 
+FUN=function(x) c(Count=length(x), Sum=sum(x))))
+res4_Pltht_10pcs
+
+
+
+rm(list=ls())
+df=read.csv("~/Ziegler_mineral_GWAS/data/apgv4/mafandeffectsize.csv")
+head(df)
+
+attach(df)
+str(df)
+
+df=as.data.frame(df)
+df[,4]=as.numeric(df[,4])
+
+install.packages("Scale")
+library(Scale)
+
+df[,4]=scale(df[,4])
+
+?scale
+
+?apply
+head(df[,4])
+library(ggplot2)
+# Basic histogram
+
+pdf("MAFandEffects_37pheno.pdf",height=15, width=20)
+ggplot(df, aes(x=Freq,y=Effect)) + geom_bar(stat = "identity") + facet_wrap(~Trait)
+  dev.off()
+
+
+```
+
